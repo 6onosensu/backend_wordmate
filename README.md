@@ -1,0 +1,43 @@
+# Backend WordMate
+
+This is the backend for the WordMate project, built using **NestJS**.
+
+## Features
+- CRUD operations for managing words
+- Integration with the API Dictionary
+- Favorite words list for learning and review
+- Database storage for persistent learning
+
+---
+
+## Getting Started
+
+### Prerequisites
+Make sure you have the following installed:
+- **Node.js** (v14.x or higher)
+- **npm** (v6.x or higher)
+
+---
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/6onosensu/backend_wordmate.git
+   ```
+   
+2. Navigate to the project directory
+   ```bash
+   cd backend_wordmate
+   ```
+   
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Project
+To start the development server:
+   ```bash
+   npm run dev
+   ```
+   
