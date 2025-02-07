@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
+import { Meaning } from './meaning.entity';
 
 @Entity()
 export class Word {
@@ -13,7 +14,7 @@ export class Word {
 
   @Column()
   partOfSpeech: string;
-/*
-  @OneToMany(())
-  meanings: Meaning[];*/
+
+  @OneToMany(() => Meaning, (meaning) => meaning.word, { cascade: true })
+  meanings: Meaning[];
 }
