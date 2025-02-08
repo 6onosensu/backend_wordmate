@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Word } from './word.entity';
 import { CreateWordDto } from './dto/create-word.dto';
 import { Meaning } from "./meaning.entity";
+import { CreateMeaningDto } from "./dto/create-meaning.dto";
 
 @Injectable()
 export class WordService {
@@ -57,5 +58,13 @@ export class WordService {
 
   async deleteMeaning(meaningId: number): Promise<void> {
     await this.meaningRepository.delete(meaningId);
+  }
+
+  async updateMeaning(id: number, updateDto: CreateMeaningDto): Promise<Meaning> {
+    const meaning = await this.meaningRepository.findOneBy({id});
+    if (!meaning) throw new NotFoundException('Meaning not found');
+
+    Object.assign(meaning, updateDto);
+    return this.meaningRepository.save(meaning);
   }
 }
