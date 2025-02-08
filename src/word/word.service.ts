@@ -2,18 +2,13 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Word } from './word.entity';
-import { CreateWordDto } from './dto/create-word.dto';
-import { Meaning } from "./meaning.entity";
-import { CreateMeaningDto } from "./dto/create-meaning.dto";
+import { CreateWordDto } from './create-word.dto';
 
 @Injectable()
 export class WordService {
   constructor(
     @InjectRepository(Word)
     private wordRepository: Repository<Word>,
-
-    @InjectRepository(Meaning)
-    private meaningRepository: Repository<Meaning>,
   ) {}
 
   async create(createWordDto: CreateWordDto): Promise<Word> {
@@ -22,13 +17,6 @@ export class WordService {
       audio: createWordDto.audio,
       partOfSpeech: createWordDto.partOfSpeech,
     });
-
-    if (createWordDto.meanings) {
-      const meanings = createWordDto.meanings.map((meaningdDto) =>
-        this.meaningRepository.create(meaningdDto),
-      );
-      word.meanings = await this.meaningRepository.save(meanings);
-    }
 
     return this.wordRepository.save(word);
   }
@@ -54,17 +42,5 @@ export class WordService {
   async remove(id: number): Promise<void> {
     const word = await this.findOne(id);
     await this.wordRepository.remove(word);
-  }
-
-  async deleteMeaning(meaningId: number): Promise<void> {
-    await this.meaningRepository.delete(meaningId);
-  }
-
-  async updateMeaning(id: number, updateDto: CreateMeaningDto): Promise<Meaning> {
-    const meaning = await this.meaningRepository.findOneBy({id});
-    if (!meaning) throw new NotFoundException('Meaning not found');
-
-    Object.assign(meaning, updateDto);
-    return this.meaningRepository.save(meaning);
   }
 }

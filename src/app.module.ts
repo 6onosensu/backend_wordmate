@@ -4,6 +4,7 @@ import { WordModule } from './word/word.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
+import { MeaningModule } from './meaning/meaning.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { BookmarkModule } from './bookmark/bookmark.module';
       synchronize: true,
     }),
     WordModule,
+    MeaningModule,
   ],
 })
 export class AppModule {}

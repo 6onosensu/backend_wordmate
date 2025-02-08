@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
-import { Meaning } from './meaning.entity';
+import { Meaning } from '../meaning/meaning.entity';
 
 @Entity()
 export class Word {

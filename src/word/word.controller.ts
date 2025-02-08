@@ -1,7 +1,6 @@
 import { Controller, Post, Get, Delete, Body, Patch, Param} from "@nestjs/common";
 import { WordService } from "./word.service";
-import { CreateWordDto } from './dto/create-word.dto';
-import { CreateMeaningDto } from "./dto/create-meaning.dto";
+import { CreateWordDto } from './create-word.dto';
 
 @Controller('words')
 export class WordController {
@@ -17,7 +16,7 @@ export class WordController {
     return this.wordService.findAll();
   }
 
-  @Get()
+  @Get(':id')
   findOne(@Param('id') id: number) {
     return this.wordService.findOne(+id);
   }
@@ -30,15 +29,5 @@ export class WordController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.wordService.remove(+id);
-  }
-
-  @Delete('/meaning/:id')
-  deleteMeaning(@Param('id') id: number) {
-    return this.wordService.deleteMeaning(id);
-  }
-
-  @Patch('/meaning/:id')
-  updateMeaning(@Param('id') id: number, @Body() updateDto: CreateMeaningDto) {
-    return this.wordService.updateMeaning(id, updateDto);
   }
 }
