@@ -54,4 +54,8 @@ export class WordService {
     const word = await this.findOne(id);
     await this.wordRepository.remove(word);
   }
+
+  async deleteMeaning(meaningId: number): Promise<void> {
+    await this.meaningRepository.delete(meaningId);
+  }
 }

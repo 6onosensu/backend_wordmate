@@ -30,4 +30,9 @@ export class WordController {
   remove(@Param('id') id: number) {
     return this.wordService.remove(+id);
   }
+
+  @Delete('/meaning/:id')
+  deleteMeaning(@Param('id') id: number) {
+    return this.wordService.deleteMeaning(id);
+  }
 }
