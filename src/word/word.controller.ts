@@ -11,6 +11,11 @@ export class WordController {
     return this.wordService.create(createWordDto);
   }
 
+  @Get('all')
+  findAllWords() {
+    return this.wordService.findAllGenericWords();
+  }
+
   @Get()
   findAll() {
     return this.wordService.findAll();

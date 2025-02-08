@@ -7,8 +7,13 @@ export class MeaningController {
   constructor(private meaningService: MeaningService) {}
 
   @Post()
-  create(@Body() createMeaningDto: CreateMeaningDto) {
-    return this.meaningService.create(createMeaningDto);
+  create(@Param('wordId') wordId: number, @Body() createMeaningDto: CreateMeaningDto) {
+    return this.meaningService.create(wordId, createMeaningDto);
+  }
+
+  @Get('all')
+  findAllMeanings() {
+    return this.meaningService.findAllGenericMeanings();
   }
 
   @Get()

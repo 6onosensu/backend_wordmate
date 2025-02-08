@@ -21,6 +21,10 @@ export class WordService {
     return this.wordRepository.save(word);
   }
 
+  async findAllGenericWords(): Promise<Word[]> {
+    return this.wordRepository.find();
+  }
+
   async findAll(): Promise<Word[]> {
     return this.wordRepository.find({ relations: ['meanings'] });
   }
