@@ -10,12 +10,24 @@ export class MeaningService {
     @InjectRepository(Meaning)
     private meaningRepository: Repository<Meaning>,
   ) {}
-  
 
-  async update(id: number, updateDto: CreateMeaningDto): Promise<Meaning> {
-    const meaning = await this.meaningRepository.findOneBy({id});
+  async create(createMeaningDto: CreateMeaningDto): Promise<Meaning> {
+    const meaning = this.meaningRepository.create(createMeaningDto);
+    return this.meaningRepository.save(meaning);
+  }
+
+  async findAll(): Promise<Meaning[]> {
+    return this.meaningRepository.find();
+  }
+
+  async findOne(id: number): Promise<Meaning> {
+    const meaning = await this.meaningRepository.findOneBy({ id });
     if (!meaning) throw new NotFoundException('Meaning not found');
+    return meaning;
+  }
 
+  async update(id: number, updateDto: Partial<CreateMeaningDto>): Promise<Meaning> {
+    const meaning = await this.findOne(id);
     Object.assign(meaning, updateDto);
     return this.meaningRepository.save(meaning);
   }
