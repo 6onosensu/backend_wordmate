@@ -7,6 +7,9 @@ This is the backend for the WordMate project, built using **NestJS**.
 - Integration with the API Dictionary
 - Favorite words list for learning and review
 - Database storage for persistent learning
+- [ERD](https://lucid.app/lucidchart/6846e91e-0b9b-4efc-a43c-cb16090e2c99/edit?viewport_loc=-1423%2C-113%2C1796%2C1406%2C0_0&invitationId=inv_99a92884-528e-4544-aeef-71d0335c9ce9)
+![ERD](https://github.com/user-attachments/assets/d0c52b68-f7ee-4714-8848-44ca8c35991a)
+
 
 ---
 
