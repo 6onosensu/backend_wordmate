@@ -17,4 +17,7 @@ export class Meaning {
 
   @ManyToOne(() => Word, (word) => word.meanings, { onDelete: "CASCADE" })
   word: Word;
+
+  @Column()
+  userId: number;
 }
