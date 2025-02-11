@@ -1,4 +1,4 @@
-import { CreateMeaningDto } from "../meaning/create-meaning.dto";
+import { CreateMeaningDto } from "src/modules/meaning/dto/create-meaning.dto";
 
 export class CreateWordDto {
   word: string;

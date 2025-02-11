@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Patch, Delete, Body, Param } from "@nestjs/common";
 import { MeaningService } from "./meaning.service";
-import { CreateMeaningDto } from "./create-meaning.dto";
+import { CreateMeaningDto } from "./dto/create-meaning.dto";
 
 @Controller('meaning')
 export class MeaningController {

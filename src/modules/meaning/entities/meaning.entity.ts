@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Word } from '../word/word.entity';
+import { Word } from 'src/modules/word/entities/word.entity';
 
 @Entity()
 export class Meaning {

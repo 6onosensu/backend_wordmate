@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meaning } from './meaning.entity';
-import { CreateMeaningDto } from "./create-meaning.dto";
+import { Meaning } from './entities/meaning.entity';
+import { CreateMeaningDto } from "./dto/create-meaning.dto";
 import { Word } from '../word/word.entity';
 
 @Injectable()
