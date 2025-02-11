@@ -32,10 +32,6 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
- // @OneToOne(() => UserProfile, (userProfile) => userProfile.user, { cascade: true })
-  //@JoinColumn()
-  //profile: UserProfile;
-
   //@OneToMany(() => UserWord, (userWord) => userWord.user)
   //words: UserWord[];
 }
