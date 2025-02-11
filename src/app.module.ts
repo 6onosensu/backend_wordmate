@@ -8,21 +8,17 @@ import { MeaningModule } from './meaning/meaning.module';
 
 @Module({
   imports: [
-    AuthModule, 
-    UserModule, 
-    BookmarkModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: '',
-      password: '',
-      database: 'wordmate',
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
     }),
     WordModule,
     MeaningModule,
+    AuthModule, 
+    UserModule, 
+    BookmarkModule,
   ],
 })
 export class AppModule {}
