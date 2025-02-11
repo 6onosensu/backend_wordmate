@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WordModule } from './word/word.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { BookmarkModule } from './bookmark/bookmark.module';
-import { MeaningModule } from './meaning/meaning.module';
+import { WordModule } from './modules/word/word.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { BookmarkModule } from './modules/bookmark/bookmark.module';
+import { MeaningModule } from './modules/meaning/meaning.module';
 
 @Module({
   imports: [
