@@ -1,37 +1,31 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity('user')
+@Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ 
-    type: 'varchar', 
-    length: 255 
-  })
-  name: string;
-
-  @Column({ 
-    type: 'varchar', 
-    length: 255, unique: true 
-  })
-  email: string;
-
-  @Column({ 
-    type: 'varchar', 
-    length: 20 
-  })
-  password: string;
-
-  @Column({ 
-    type: 'varchar', 
-    length: 50 
-  })
-  role: string;
-
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  //@OneToMany(() => UserWord, (userWord) => userWord.user)
-  //words: UserWord[];
+  @Column({ unique: true, length: 255 })
+  email: string;
+
+  @Column({ length: 20 })
+  password: string;
+
+  @Column({ length: 50 })
+  role: string;
+
+  @Column({ length: 255 })
+  name: string;
+
+  @Column({ length: 20, nullable: true })
+  number: string;
+
+  @Column({ type: 'text', nullable: true })
+  picture: string;
+
+  @Column({ length: 100, nullable: true })
+  countryName: string;
 }
