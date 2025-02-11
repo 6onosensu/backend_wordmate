@@ -1,3 +1,6 @@
+import { UserWordMeaningModule } from './modules/user-word-meaning/user-word-meaning.module';
+import { UserProfileModule } from './modules/user-profile/user-profile.module';
+import { UserWordsModule } from './modules/user-words/user-words.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WordModule } from './modules/word/word.module';
@@ -14,10 +17,13 @@ import { MeaningModule } from './modules/meaning/meaning.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    AuthModule, 
+    UserModule,
+    UserWordMeaningModule, 
+    UserProfileModule, 
+    UserWordsModule, 
     WordModule,
     MeaningModule,
-    AuthModule, 
-    UserModule, 
     BookmarkModule,
   ],
 })
