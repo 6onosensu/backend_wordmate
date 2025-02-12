@@ -14,7 +14,7 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User | null> {
+  findOne(@Param('id') id: number): Promise<User | null> {
     return this.userService.findOne(id);
   }
 
@@ -24,12 +24,12 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User | null> {
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User | null> {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
+  delete(@Param('id') id: number): Promise<void> {
     return this.userService.delete(id);
   }
 }

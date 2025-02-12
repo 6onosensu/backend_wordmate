@@ -1,13 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { BaseEntityWithTimestamps } from 'src/common/base.entity';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @CreateDateColumn({ type: 'timestamptz' })
-  createdAt: Date;
-
+export class User extends BaseEntityWithTimestamps {
   @Column({ unique: true, length: 255 })
   email: string;
 

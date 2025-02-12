@@ -14,7 +14,7 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  findOne(id: string): Promise<User | null> {
+  findOne(id: number): Promise<User | null> {
     return this.userRepository.findOne({ where: { id } });
   }
 
@@ -23,12 +23,12 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async update(id: string, updateData: Partial<User>): Promise<User | null> {
+  async update(id: number, updateData: Partial<User>): Promise<User | null> {
     await this.userRepository.update(id, updateData);
     return this.findOne(id);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.userRepository.delete(id);
   }
 }
