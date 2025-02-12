@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Word } from './word.entity';
-import { CreateWordDto } from './create-word.dto';
+import { Word } from "./entities/word.entity";
+import { CreateWordDto } from "./dto/create-word.dto";
 
 @Injectable()
 export class WordService {

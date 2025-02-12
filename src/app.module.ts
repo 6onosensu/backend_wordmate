@@ -1,16 +1,18 @@
-import { UserWordMeaningModule } from './modules/user-word-meaning/user-word-meaning.module';
-import { UserProfileModule } from './modules/user-profile/user-profile.module';
-import { UserWordsModule } from './modules/user-words/user-words.module';
+//import { UserWordMeaningModule } from './modules/user-word-meaning/user-word-meaning.module';
+//import { UserWordsModule } from './modules/user-words/user-words.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WordModule } from './modules/word/word.module';
+import { ConfigModule } from '@nestjs/config';
+//import { WordModule } from './modules/word/word.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-import { BookmarkModule } from './modules/bookmark/bookmark.module';
-import { MeaningModule } from './modules/meaning/meaning.module';
+
+//import { BookmarkModule } from './modules/bookmark/bookmark.module';
+//import { MeaningModule } from './modules/meaning/meaning.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
@@ -18,13 +20,12 @@ import { MeaningModule } from './modules/meaning/meaning.module';
       synchronize: true,
     }),
     AuthModule, 
-    UserModule,
+    UserModule,/*
     UserWordMeaningModule, 
-    UserProfileModule, 
     UserWordsModule, 
     WordModule,
     MeaningModule,
-    BookmarkModule,
+    BookmarkModule,*/
   ],
 })
 export class AppModule {}

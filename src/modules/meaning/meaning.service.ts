@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meaning } from './entities/meaning.entity';
 import { CreateMeaningDto } from "./dto/create-meaning.dto";
-import { Word } from '../word/word.entity';
+import { Word } from "../word/entities/word.entity";
 
 @Injectable()
 export class MeaningService {
