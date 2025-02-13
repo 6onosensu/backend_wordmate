@@ -6,11 +6,8 @@ export class User extends BaseEntityWithTimestamps {
   @Column({ unique: true, length: 255 })
   email: string;
 
-  @Column({ length: 20 })
+  @Column({ type: 'text' })
   password: string;
-
-  @Column({ length: 50 })
-  role: string;
 
   @Column({ length: 255 })
   name: string;
