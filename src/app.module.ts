@@ -1,3 +1,4 @@
+import { PartOfSpeechModule } from './modules/part-of-speech/partofspeech.module';
 //import { UserWordMeaningModule } from './modules/user-word-meaning/user-word-meaning.module';
 //import { UserWordsModule } from './modules/user-words/user-words.module';
 import { Module } from '@nestjs/common';
@@ -20,7 +21,8 @@ import { UserModule } from './modules/user/user.module';
       synchronize: true,
     }),
     AuthModule, 
-    UserModule,/*
+    UserModule,
+    PartOfSpeechModule, /*
     UserWordMeaningModule, 
     UserWordsModule, 
     WordModule,
