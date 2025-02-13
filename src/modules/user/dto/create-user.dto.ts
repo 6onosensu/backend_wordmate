@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+import { IsEmail, IsOptional, IsString, Length, Matches } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -14,7 +14,10 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
-  @Length(1, 20)
+  @Length(6, 20)
+  @Matches(/^\+?\d+$/, { 
+    message: 'Phone number must contain only digits and an optional leading + sign' 
+  })
   number?: string;
 
   @IsOptional()
