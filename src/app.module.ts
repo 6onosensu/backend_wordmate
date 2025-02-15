@@ -1,16 +1,12 @@
+import { MeaningModule } from './modules/meaning/meaning.module';
 import { WordModule } from './modules/word/word.module';
 import { PartOfSpeechModule } from './modules/part-of-speech/partofspeech.module';
-//import { UserWordMeaningModule } from './modules/user-word-meaning/user-word-meaning.module';
-//import { UserWordsModule } from './modules/user-words/user-words.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-//import { WordModule } from './modules/word/word.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-
 //import { BookmarkModule } from './modules/bookmark/bookmark.module';
-//import { MeaningModule } from './modules/meaning/meaning.module';
 
 @Module({
   imports: [
@@ -25,6 +21,7 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
     PartOfSpeechModule,
     WordModule,
+    MeaningModule,
   ],
 })
 export class AppModule {}
