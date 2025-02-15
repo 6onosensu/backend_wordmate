@@ -1,10 +1,11 @@
-import { Entity, Column, } from 'typeorm';
+import { BaseEntityWithTimestamps } from 'src/common/base.entity';
+import { Entity, Column, BaseEntity, } from 'typeorm';
 
 @Entity()
-export class Word {
-  @Column()
+export class Word extends BaseEntityWithTimestamps {
+  @Column({ length: 255, unique: true })
   word: string;
 
-  @Column({nullable: true})
-  audio: string;
+  @Column({ type: 'text', nullable: true })
+  audio?: string;
 }

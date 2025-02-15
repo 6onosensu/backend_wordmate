@@ -1,3 +1,4 @@
+import { WordModule } from './modules/word/word.module';
 import { PartOfSpeechModule } from './modules/part-of-speech/partofspeech.module';
 //import { UserWordMeaningModule } from './modules/user-word-meaning/user-word-meaning.module';
 //import { UserWordsModule } from './modules/user-words/user-words.module';
@@ -20,14 +21,10 @@ import { UserModule } from './modules/user/user.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    AuthModule, 
+    AuthModule,
     UserModule,
-    PartOfSpeechModule, /*
-    UserWordMeaningModule, 
-    UserWordsModule, 
+    PartOfSpeechModule,
     WordModule,
-    MeaningModule,
-    BookmarkModule,*/
   ],
 })
 export class AppModule {}
