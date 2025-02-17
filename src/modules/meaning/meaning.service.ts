@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meaning } from './entities/meaning.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateMeaningDto } from './dto/create-meaning.dto';
 import { Word } from '../word/entities/word.entity';
 
@@ -16,14 +16,21 @@ export class MeaningService {
   ) {}
 
   async findAll(): Promise<Meaning[]> {
-    return this.meaningRepository.find();
+    return this.meaningRepository.find({
+      relations: ['partOfSpeech', 'word'],
+    });
   }
 
   async findOne(id: number): Promise<Meaning> {
-    const meaning = await this.meaningRepository.findOne({ where: { id } });
+    const meaning = await this.meaningRepository.findOne({ 
+      where: { id } ,
+      relations: ['partOfSpeech', 'word'],
+    });
+
     if (!meaning) {
       throw new NotFoundException(`Meaning with ID ${id} not found`);
     }
+
     return meaning;
   }
 
@@ -49,7 +56,9 @@ export class MeaningService {
 
     const synonymMeaningIds = await this.processWords(dto.synonymMeaningIds || []);
     const antonymMeaningIds = await this.processWords(dto.antonymMeaningIds || []);
+    
     meaning.definition = dto.definition;
+
     meaning.synonymMeaningIds = synonymMeaningIds;
     meaning.antonymMeaningIds = antonymMeaningIds;
 
@@ -62,7 +71,19 @@ export class MeaningService {
   }
 
   /**
-   * Helper Function: Finds an existing word by ID or throws an error
+   * Helper Function: converts ids to word names
+   */
+  async getWordsByIds(wordIds: number[]): Promise<string[]> {
+    if (!wordIds || wordIds.length === 0) return [];
+
+    const words = await this.wordRepository.find({
+      where: { id: In(wordIds) },
+    })
+    return words.map((word) => word.word);
+  }
+
+  /**
+   * Helper Function: finds an existing word by ID or throws an error
    */
   private async findWordById(wordId: number): Promise<Word> {
     const word = await this.wordRepository.findOne({ where: { id: wordId } });
@@ -73,7 +94,7 @@ export class MeaningService {
   }
 
   /**
-   *  Helper Function: Processes a list of word texts and returns their IDs
+   *  Helper Function: processes a list of word texts and returns their IDs
    */
   private async processWords(wordTexts: string[]): Promise<number[]> {
     return Promise.all(

@@ -1,19 +1,42 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { MeaningService } from './meaning.service';
 import { CreateMeaningDto } from './dto/create-meaning.dto';
+import { FindOneMeaningDto } from './dto/findOne-meaning.dto';
 
 @Controller('meanings')
 export class MeaningController {
   constructor(private readonly meaningService: MeaningService) {}
 
   @Get()
-  findAll() {
-    return this.meaningService.findAll();
+  async findAll(): Promise<FindOneMeaningDto[]> {
+    const meanings = await this.meaningService.findAll();
+
+    return Promise.all(
+      meanings.map(async (meaning) => ({
+        id: meaning.id,
+        partOfSpeech: meaning.partOfSpeech.title, 
+        word: meaning.word.word, 
+        audio: meaning.word.audio,
+        definition: meaning.definition,
+        synonyms: await this.meaningService.getWordsByIds(meaning.synonymMeaningIds ?? []),
+        antonyms: await this.meaningService.getWordsByIds(meaning.antonymMeaningIds ?? []),
+      }))
+    )
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.meaningService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<FindOneMeaningDto> {
+    const meaning = await this.meaningService.findOne(id);
+
+    return {
+      id: meaning.id,
+      partOfSpeech: meaning.partOfSpeech.title,
+      word: meaning.word.word,
+      audio: meaning.word.audio,
+      definition: meaning.definition,
+      synonyms: await this.meaningService.getWordsByIds(meaning.synonymMeaningIds ?? []),
+      antonyms: await this.meaningService.getWordsByIds(meaning.antonymMeaningIds ?? []),
+    };
   }
 
   @Post()

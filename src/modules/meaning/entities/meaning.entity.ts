@@ -5,10 +5,16 @@ import { Column, Entity, ManyToOne } from "typeorm";
 
 @Entity()
 export class Meaning extends BaseEntityWithTimestamps {
-  @ManyToOne(() => PartOfSpeech, (partOfSpeech) => partOfSpeech.id, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => PartOfSpeech, { 
+    eager: true, 
+    onDelete: 'CASCADE' 
+  })
   partOfSpeech: PartOfSpeech;
 
-  @ManyToOne(() => Word, (word) => word.id, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Word, { 
+    eager: true, 
+    onDelete: 'CASCADE' 
+  })
   word: Word;
 
   @Column({ type: 'text' })
