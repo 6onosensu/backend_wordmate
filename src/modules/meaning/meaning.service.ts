@@ -4,6 +4,7 @@ import { Meaning } from './entities/meaning.entity';
 import { In, Repository } from 'typeorm';
 import { CreateMeaningDto } from './dto/create-meaning.dto';
 import { Word } from '../word/entities/word.entity';
+import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 
 @Injectable()
 export class MeaningService {
@@ -13,6 +14,9 @@ export class MeaningService {
 
     @InjectRepository(Word)
     private readonly wordRepository: Repository<Word>,
+
+    @InjectRepository(PartOfSpeech)
+    private readonly partOfSpeechRepository: Repository<PartOfSpeech>,
   ) {}
 
   async findAll(): Promise<Meaning[]> {
@@ -35,14 +39,14 @@ export class MeaningService {
   }
 
   async create(dto: CreateMeaningDto): Promise<Meaning> {
-    const word = await this.findWordById(dto.wordId);
-  
-    const synonymMeaningIds = await this.processWords(dto.synonymMeaningIds || []);
-    const antonymMeaningIds = await this.processWords(dto.antonymMeaningIds || []);
+    const partOfSpeech = await this.findOrCreatePartOfSpeech(dto.partOfSpeech);
+    const word = await this.findOrCreateWord(dto.word);
+    const synonymMeaningIds = await this.processWords(dto.synonyms || []);
+    const antonymMeaningIds = await this.processWords(dto.antonyms || []);
   
     const meaning = this.meaningRepository.create({
-      partOfSpeech: { id: dto.partOfSpeechId },
-      word: { id: dto.wordId },
+      partOfSpeech: { id: partOfSpeech.id },
+      word: { id: word.id },
       definition: dto.definition,
       synonymMeaningIds,
       antonymMeaningIds,
@@ -54,11 +58,15 @@ export class MeaningService {
   async update(id: number, dto: CreateMeaningDto): Promise<Meaning> {
     const meaning = await this.findOne(id);
 
-    const synonymMeaningIds = await this.processWords(dto.synonymMeaningIds || []);
-    const antonymMeaningIds = await this.processWords(dto.antonymMeaningIds || []);
-    
-    meaning.definition = dto.definition;
+    const partOfSpeech = await this.findOrCreatePartOfSpeech(dto.partOfSpeech);
+    const word = await this.findOrCreateWord(dto.word);
 
+    const synonymMeaningIds = await this.processWords(dto.synonyms || []);
+    const antonymMeaningIds = await this.processWords(dto.antonyms || []);
+    
+    meaning.partOfSpeech = partOfSpeech;
+    meaning.word = word;
+    meaning.definition = dto.definition;
     meaning.synonymMeaningIds = synonymMeaningIds;
     meaning.antonymMeaningIds = antonymMeaningIds;
 
@@ -83,31 +91,43 @@ export class MeaningService {
   }
 
   /**
-   * Helper Function: finds an existing word by ID or throws an error
-   */
-  private async findWordById(wordId: number): Promise<Word> {
-    const word = await this.wordRepository.findOne({ where: { id: wordId } });
-    if (!word) {
-      throw new NotFoundException(`Word with ID ${wordId} not found`);
-    }
-    return word;
-  }
-
-  /**
    *  Helper Function: processes a list of word texts and returns their IDs
    */
   private async processWords(wordTexts: string[]): Promise<number[]> {
     return Promise.all(
       wordTexts.map(async (wordText) => {
-        let existingWord = await this.wordRepository.findOne({ where: { word: wordText } });
-
-        if (!existingWord) {
-          existingWord = this.wordRepository.create({ word: wordText });
-          await this.wordRepository.save(existingWord);
-        }
-
-        return existingWord.id;
+        const word = await this.findOrCreateWord(wordText);
+        return word.id;
       })
     );
   }
+
+  /**
+   * Helper Function: finds or creates a Word by its name
+   */
+    private async findOrCreateWord(wordText: string): Promise<Word> {
+      let word = await this.wordRepository.findOne({ where: { word: wordText } });
+  
+      if (!word) {
+        word = this.wordRepository.create({ word: wordText });
+        await this.wordRepository.save(word);
+      }
+  
+      return word;
+    }
+
+  /**
+   * Helper Function: finds or creates a Part of Speech by its title
+   */
+  private async findOrCreatePartOfSpeech(title: string): Promise<PartOfSpeech> {
+    let partOfSpeech = await this.partOfSpeechRepository.findOne({ where: { title } });
+
+    if (!partOfSpeech) {
+      partOfSpeech = this.partOfSpeechRepository.create({ title });
+      await this.partOfSpeechRepository.save(partOfSpeech);
+    }
+
+    return partOfSpeech;
+  }
+
 }

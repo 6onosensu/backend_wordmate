@@ -1,11 +1,11 @@
-import { IsArray, IsInt, IsOptional, IsString } from "class-validator";
+import { IsArray, IsOptional, IsString } from "class-validator";
 
 export class CreateMeaningDto {
-  @IsInt()
-  partOfSpeechId: number;
+  @IsString()
+  partOfSpeech: string;
 
-  @IsInt()
-  wordId: number;
+  @IsString()
+  word: string;
 
   @IsString()
   definition: string;
@@ -13,10 +13,10 @@ export class CreateMeaningDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  synonymMeaningIds?: string[];
+  synonyms?: string[]; 
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  antonymMeaningIds?: string[];
+  antonyms?: string[]; 
 }
