@@ -7,6 +7,10 @@ export class CreateMeaningDto {
   @IsString()
   word: string;
 
+  @IsOptional()
+  @IsString()
+  audio?: string;
+
   @IsString()
   definition: string;
 

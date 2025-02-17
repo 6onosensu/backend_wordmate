@@ -40,7 +40,7 @@ export class MeaningService {
 
   async create(dto: CreateMeaningDto): Promise<Meaning> {
     const partOfSpeech = await this.findOrCreatePartOfSpeech(dto.partOfSpeech);
-    const word = await this.findOrCreateWord(dto.word);
+    const word = await this.findOrCreateWord(dto.word, dto.audio);
     const synonymMeaningIds = await this.processWords(dto.synonyms || []);
     const antonymMeaningIds = await this.processWords(dto.antonyms || []);
   
@@ -59,7 +59,7 @@ export class MeaningService {
     const meaning = await this.findOne(id);
 
     const partOfSpeech = await this.findOrCreatePartOfSpeech(dto.partOfSpeech);
-    const word = await this.findOrCreateWord(dto.word);
+    const word = await this.findOrCreateWord(dto.word, dto.audio);
 
     const synonymMeaningIds = await this.processWords(dto.synonyms || []);
     const antonymMeaningIds = await this.processWords(dto.antonyms || []);
@@ -105,11 +105,14 @@ export class MeaningService {
   /**
    * Helper Function: finds or creates a Word by its name
    */
-    private async findOrCreateWord(wordText: string): Promise<Word> {
+    private async findOrCreateWord(wordText: string, audio?: string): Promise<Word> {
       let word = await this.wordRepository.findOne({ where: { word: wordText } });
   
       if (!word) {
-        word = this.wordRepository.create({ word: wordText });
+        word = this.wordRepository.create({ word: wordText, audio });
+        await this.wordRepository.save(word);
+      } else if (audio && !word.audio) {
+        word.audio = audio;
         await this.wordRepository.save(word);
       }
   
