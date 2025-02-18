@@ -5,16 +5,16 @@ export class CreateUserWordDto {
   userId: number;
 
   @IsInt()
-  wordId: number;
+  meaningId: number;
 
   @IsString()
   @IsEnum(["to learn", "on repeat", "learned"])
   status: string;
 
   @IsOptional()
-  repititionDate?: Date;
+  repetitionDate?: Date;
 
   @IsOptional()
   @IsInt()
-  repititionCount?: number;
+  repetitionCount?: number;
 }

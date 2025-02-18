@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserWord } from './entities/user-word.entity';
 import { Repository } from 'typeorm';
 import { User } from "src/modules/user/entities/user.entity";
-import { Word } from "src/modules/word/entities/word.entity"
 import { CreateUserWordDto } from './dto/create-userWord.dto';
+import { Meaning } from '../meaning/entities/meaning.entity';
 
 @Injectable()
 export class UserWordService {
@@ -15,8 +15,8 @@ export class UserWordService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
-    @InjectRepository(Word)
-    private readonly wordRepository: Repository<Word>
+    @InjectRepository(Meaning)
+    private readonly meaningRepository: Repository<Meaning>
   ) {}
 
   async findAll(): Promise<UserWord[]> {
@@ -30,18 +30,32 @@ export class UserWordService {
   }
 
   async create(dto: CreateUserWordDto): Promise<UserWord> {
-    const user = await this.userRepository.findOne({ where: {id: dto.userId} });
+    const user = await this.userRepository.findOne({ 
+      where: { id: dto.userId } 
+    });
     if (!user) throw new NotFoundException(`User with ID ${dto.userId} not found`);
 
-    const word = await this.wordRepository.findOne({ where: { id: dto.wordId } });
-    if (!word) throw new NotFoundException(`Word with ID ${dto.wordId} not found`);
+    const meaning = await this.meaningRepository.findOne({ 
+      where: { id: dto.meaningId } 
+    });
+    if (!meaning) throw new NotFoundException(`Meaning with ID ${dto.meaningId} not found`);
+
+    const existingUserWord = await this.userWordRepository.findOne({
+      where: { 
+        user: { id: user.id }, 
+        meaning: { id: meaning.id } 
+      },
+    });
+    if (existingUserWord) {
+      throw new Error(`UserWord already exists for User ID ${dto.userId} and Meaning ID ${dto.meaningId}`);
+    }
 
     const userWord = this.userWordRepository.create({
       user,
-      word,
+      meaning,
       status: dto.status,
-      repetitionDate: dto.repititionDate,
-      repititionCount: dto.repititionCount ?? 0,
+      repetitionDate: dto.repetitionDate || undefined,
+      repetitionCount: dto.repetitionCount ?? 0,
     });
 
     return this.userWordRepository.save(userWord)
@@ -51,8 +65,8 @@ export class UserWordService {
     const userWord = await this.findOne(id);
 
     if (dto.status) userWord.status = dto.status;
-    if (dto.repititionDate) userWord.repetitionDate = dto.repititionDate;
-    if (dto.repititionCount !== undefined) userWord.repititionCount = dto.repititionCount;
+    if (dto.repetitionDate) userWord.repetitionDate = dto.repetitionDate;
+    if (dto.repetitionCount !== undefined) userWord.repetitionCount = dto.repetitionCount;
 
     return this.userWordRepository.save(userWord);
   }
