@@ -3,7 +3,9 @@
 This is the backend for the WordMate project, built using **NestJS**.
 
 - [ERD](https://lucid.app/lucidchart/6846e91e-0b9b-4efc-a43c-cb16090e2c99/edit?viewport_loc=-1423%2C-113%2C1796%2C1406%2C0_0&invitationId=inv_99a92884-528e-4544-aeef-71d0335c9ce9)
-![erd3](https://github.com/user-attachments/assets/efdb3910-4310-4e2b-9046-99dbefa383a7)
+![erd4](https://github.com/user-attachments/assets/6c6c2a52-74b6-4d22-a02d-15827ecdc3f8)
+
+
 
 ## Features
 - CRUD operations for managing words
