@@ -41,6 +41,10 @@ export class MeaningService {
   async create(dto: CreateMeaningDto): Promise<Meaning> {
     const partOfSpeech = await this.findOrCreatePartOfSpeech(dto.partOfSpeech);
     const word = await this.findOrCreateWord(dto.word, dto.audio);
+
+    const existingMeaning = await this.findExistingMeaning(word.id, partOfSpeech.id, dto.definition);
+    if (existingMeaning) return existingMeaning;
+
     const synonymMeaningIds = await this.processWords(dto.synonyms || []);
     const antonymMeaningIds = await this.processWords(dto.antonyms || []);
   
@@ -76,6 +80,19 @@ export class MeaningService {
   async delete(id: number): Promise<void> {
     const meaning = await this.findOne(id);
     await this.meaningRepository.remove(meaning);
+  }
+
+  /**
+   * Helper Function: searches for an existing meaning before creating a new one
+   */
+  private async findExistingMeaning(wordId: number, partOfSpeechId: number, definition: string): Promise<Meaning | null> {
+    return this.meaningRepository.findOne({
+        where: { 
+            word: { id: wordId },
+            partOfSpeech: { id: partOfSpeechId },
+            definition: definition,
+        }
+    });
   }
 
   /**
