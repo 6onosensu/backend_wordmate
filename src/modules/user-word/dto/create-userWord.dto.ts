@@ -7,9 +7,8 @@ export class CreateUserWordDto {
   @IsInt()
   meaningId: number;
 
-  @IsString()
-  @IsEnum(["to learn", "on repeat", "learned"])
-  status: string;
+  @IsInt()
+  statusId: number;
 
   @IsOptional()
   repetitionDate?: Date;

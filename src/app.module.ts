@@ -1,3 +1,4 @@
+import { StatusModule } from './modules/status/status.module';
 import { MeaningModule } from './modules/meaning/meaning.module';
 import { WordModule } from './modules/word/word.module';
 import { PartOfSpeechModule } from './modules/part-of-speech/partofspeech.module';
@@ -10,6 +11,7 @@ import { UserWordModule } from './modules/user-word/user-word.module';
 
 @Module({
   imports: [
+    StatusModule, 
     AuthModule,
     UserModule,
     PartOfSpeechModule,

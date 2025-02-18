@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserWord } from './entities/user-word.entity';
 import { Repository } from 'typeorm';
 import { User } from "src/modules/user/entities/user.entity";
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { Meaning } from '../meaning/entities/meaning.entity';
+import { Status } from '../status/entities/status.entity';
 
 @Injectable()
 export class UserWordService {
@@ -16,7 +17,10 @@ export class UserWordService {
     private readonly userRepository: Repository<User>,
 
     @InjectRepository(Meaning)
-    private readonly meaningRepository: Repository<Meaning>
+    private readonly meaningRepository: Repository<Meaning>,
+
+    @InjectRepository(Status)
+    private readonly statusRepository: Repository<Status>
   ) {}
 
   async findAll(): Promise<UserWord[]> {
@@ -40,6 +44,9 @@ export class UserWordService {
     });
     if (!meaning) throw new NotFoundException(`Meaning with ID ${dto.meaningId} not found`);
 
+    const status = await this.statusRepository.findOne({ where: { id: dto.statusId } });
+    if (!status) throw new NotFoundException(`Status with ID ${dto.statusId} not found`);
+
     const existingUserWord = await this.userWordRepository.findOne({
       where: { 
         user: { id: user.id }, 
@@ -47,13 +54,13 @@ export class UserWordService {
       },
     });
     if (existingUserWord) {
-      throw new Error(`UserWord already exists for User ID ${dto.userId} and Meaning ID ${dto.meaningId}`);
+      throw new ConflictException(`UserWord already exists for User ID ${dto.userId} and Meaning ID ${dto.meaningId}`);
     }
 
     const userWord = this.userWordRepository.create({
       user,
       meaning,
-      status: dto.status,
+      status,
       repetitionDate: dto.repetitionDate || undefined,
       repetitionCount: dto.repetitionCount ?? 0,
     });
@@ -64,7 +71,13 @@ export class UserWordService {
   async update(id: number, dto: Partial<CreateUserWordDto>): Promise<UserWord> {
     const userWord = await this.findOne(id);
 
-    if (dto.status) userWord.status = dto.status;
+    const status = await this.statusRepository.findOne({ where: { id: dto.statusId } });
+
+    if (dto.statusId) {
+      const status = await this.statusRepository.findOne({ where: { id: dto.statusId } });
+      if (!status) throw new NotFoundException(`Status with ID ${dto.statusId} not found`);
+      userWord.status = status;
+    }
     if (dto.repetitionDate) userWord.repetitionDate = dto.repetitionDate;
     if (dto.repetitionCount !== undefined) userWord.repetitionCount = dto.repetitionCount;
 
@@ -74,5 +87,21 @@ export class UserWordService {
   async delete(id: number): Promise<void> {
     const userWord = await this.findOne(id);
     await this.userWordRepository.remove(userWord);
+  }
+
+  async findByUserAndStatus(userId: number, statusId: number): Promise<UserWord[]> {
+    const userWordList = await this.userWordRepository.find({
+      where: { 
+        user: { id: userId }, 
+        status: { id: statusId } 
+      },
+      relations: ['user', 'meaning', 'status'],
+    });
+  
+    if (userWordList.length === 0) {
+      throw new NotFoundException(`No UserWords found for User ID ${userId} with Status ID ${statusId}`);
+    }
+  
+    return userWordList;
   }
 }

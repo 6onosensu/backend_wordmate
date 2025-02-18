@@ -31,4 +31,13 @@ export class UserWordController {
   delete(@Param('id') id: number): Promise<void> {
     return this.userWordService.delete(id)
   }
+
+  @Get('/user/:userId/status/:statusId')
+  findByUserAndStatus(
+    @Param('userId') userId: number,
+    @Param('statusId') statusId: number,
+  ): Promise<UserWord[]> {
+    return this.userWordService.findByUserAndStatus(userId, statusId);
+  }
+
 }
