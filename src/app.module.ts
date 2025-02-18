@@ -6,9 +6,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { UserWordModule } from './modules/user-word/user-word.module';
 
 @Module({
   imports: [
+    AuthModule,
+    UserModule,
+    PartOfSpeechModule,
+    WordModule,
+    MeaningModule,
+    UserWordModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -16,11 +23,6 @@ import { UserModule } from './modules/user/user.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    AuthModule,
-    UserModule,
-    PartOfSpeechModule,
-    WordModule,
-    MeaningModule,
   ],
 })
 export class AppModule {}
