@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserWord } from './entities/user-word.entity';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { User } from "src/modules/user/entities/user.entity";
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { Meaning } from '../meaning/entities/meaning.entity';
@@ -103,5 +103,18 @@ export class UserWordService {
     }
   
     return userWordList;
+  }
+
+  async findWordsToRepeat(userId: number): Promise<UserWord[]> {
+    const now = new Date();
+
+    return this.userWordRepository.find({
+      where: {
+        user: { id: userId },
+        status: { id: 3},
+        repetitionDate: LessThanOrEqual(now),
+      },
+      relations: ['meaning', 'status']
+    })
   }
 }

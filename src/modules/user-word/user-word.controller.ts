@@ -17,6 +17,11 @@ export class UserWordController {
     return this.userWordService.findOne(id);
   }
 
+  @Get('toRepeat/:userId')
+  findWordsToRepeat(@Param('userId') userId: number): Promise<UserWord[]> {
+    return this.userWordService.findWordsToRepeat(userId);
+  }
+
   @Post()
   create(@Body() dto: CreateUserWordDto): Promise<UserWord> {
     return this.userWordService.create(dto);
