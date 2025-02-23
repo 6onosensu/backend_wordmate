@@ -23,4 +23,8 @@ export class CreateMeaningDto {
   @IsArray()
   @IsString({ each: true })
   antonyms?: string[]; 
+
+  @IsOptional()
+  @IsString()
+  example?: string;
 }

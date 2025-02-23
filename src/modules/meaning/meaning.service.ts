@@ -43,7 +43,13 @@ export class MeaningService {
     const word = await this.findOrCreateWord(dto.word, dto.audio);
 
     const existingMeaning = await this.findExistingMeaning(word.id, partOfSpeech.id, dto.definition);
-    if (existingMeaning) return existingMeaning;
+    if (existingMeaning) {
+      if (!existingMeaning.example && dto.example) {
+        existingMeaning.example = dto.example;
+        return this.meaningRepository.save(existingMeaning);
+      }
+      return existingMeaning;
+    }
 
     const synonymMeaningIds = await this.processWords(dto.synonyms || []);
     const antonymMeaningIds = await this.processWords(dto.antonyms || []);
@@ -54,6 +60,7 @@ export class MeaningService {
       definition: dto.definition,
       synonymMeaningIds,
       antonymMeaningIds,
+      example: dto.example,
     });
   
     return this.meaningRepository.save(meaning);
@@ -73,6 +80,9 @@ export class MeaningService {
     meaning.definition = dto.definition;
     meaning.synonymMeaningIds = synonymMeaningIds;
     meaning.antonymMeaningIds = antonymMeaningIds;
+    if (dto.example !== undefined) {
+      meaning.example = dto.example;
+    }
 
     return this.meaningRepository.save(meaning);
   }

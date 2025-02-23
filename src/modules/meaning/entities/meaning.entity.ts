@@ -25,4 +25,7 @@ export class Meaning extends BaseEntityWithTimestamps {
 
   @Column({ type: 'json', nullable: true })
   antonymMeaningIds?: number[];
+
+  @Column({ type: 'text', nullable: true })
+  example?: string;
 }

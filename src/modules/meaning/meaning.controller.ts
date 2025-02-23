@@ -20,6 +20,7 @@ export class MeaningController {
         definition: meaning.definition,
         synonyms: await this.meaningService.getWordsByIds(meaning.synonymMeaningIds ?? []),
         antonyms: await this.meaningService.getWordsByIds(meaning.antonymMeaningIds ?? []),
+        example: meaning.example,
       }))
     )
   }
@@ -36,6 +37,7 @@ export class MeaningController {
       definition: meaning.definition,
       synonyms: await this.meaningService.getWordsByIds(meaning.synonymMeaningIds ?? []),
       antonyms: await this.meaningService.getWordsByIds(meaning.antonymMeaningIds ?? []),
+      example: meaning.example,
     };
   }
 
