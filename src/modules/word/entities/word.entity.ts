@@ -1,5 +1,5 @@
 import { BaseEntityWithTimestamps } from 'src/common/base.entity';
-import { Entity, Column, BaseEntity, } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 @Entity()
 export class Word extends BaseEntityWithTimestamps {

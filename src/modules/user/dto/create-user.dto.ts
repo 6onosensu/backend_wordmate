@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Length, Matches } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -8,8 +8,9 @@ export class CreateUserDto {
   @Length(6, 20)
   password: string;
 
-  @IsString()
-  @Length(1, 255)
+  @IsString({ message: "Name must be a string" })
+  @IsNotEmpty({ message: "Name is required" })
+  @Length(1, 60, { message: "Name must be between 1 and 60 characters" })
   name: string;
 
   @IsOptional()
