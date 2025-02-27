@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import type { Multer } from 'multer';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -17,7 +19,6 @@ export class UserController {
 
   @Get('me')
   getMe(@Req() req): User {
-    console.log("req.user:", req.user);
     return req.user; 
   }
 
@@ -27,12 +28,20 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  @UseInterceptors(FileInterceptor('file'))
+  create(@Body() createUserDto: CreateUserDto, @UploadedFile() file?: Multer.File): Promise<User> {
+    if (file) {
+      createUserDto.pictureFile = file.buffer.toString('base64');
+    }
     return this.userService.create(createUserDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User | null> {
+  @UseInterceptors(FileInterceptor('file'))
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @UploadedFile() file?: Multer.File): Promise<User | null> {
+    if (file) {
+      updateUserDto.pictureFile = file.buffer.toString('base64');
+    }
     return this.userService.update(id, updateUserDto);
   }
 

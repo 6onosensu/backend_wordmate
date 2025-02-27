@@ -22,8 +22,15 @@ export class CreateUserDto {
   number?: string;
 
   @IsOptional()
+  @IsOptional()
+  @Matches(/^data:image\/[a-zA-Z]+;base64,[^\s]+$/, {
+    message: 'Picture file must be a valid Base64-encoded image',
+  })
+  pictureFile?: string;
+
+  @IsOptional()
   @IsString()
-  picture?: string;
+  pictureUrl?: string; 
 
   @IsOptional()
   @IsString()
