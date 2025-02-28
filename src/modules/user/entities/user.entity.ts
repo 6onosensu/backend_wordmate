@@ -16,10 +16,10 @@ export class User extends BaseEntityWithTimestamps {
   number: string;
 
   @Column({ type: 'bytea', nullable: true })
-  pictureFile?: Buffer;
+  pictureFile: Buffer;
 
   @Column({ type: 'text', nullable: true })
-  pictureUrl?: string;
+  pictureUrl: string;
 
   @Column({ length: 100, nullable: true })
   countryName: string;
