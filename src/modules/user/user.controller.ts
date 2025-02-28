@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Req, UseInterceptors, UploadedFile, NotFoundException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,8 +18,14 @@ export class UserController {
   }
 
   @Get('me')
-  getMe(@Req() req): User {
-    return req.user; 
+  async getMe(@Req() req) {
+    const user = await this.userService.findOne(req.user.id);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return user;
   }
 
   @Get(':id')
@@ -28,20 +34,12 @@ export class UserController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  create(@Body() createUserDto: CreateUserDto, @UploadedFile() file?: Multer.File): Promise<User> {
-    if (file) {
-      createUserDto.pictureFile = file.buffer.toString('base64');
-    }
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'))
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @UploadedFile() file?: Multer.File): Promise<User | null> {
-    if (file) {
-      updateUserDto.pictureFile = file.buffer.toString('base64');
-    }
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User | null> {
     return this.userService.update(id, updateUserDto);
   }
 

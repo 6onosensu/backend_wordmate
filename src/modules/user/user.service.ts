@@ -21,20 +21,8 @@ export class UserService {
   }
 
   async create(userData: CreateUserDto): Promise<User> {
-    const user = new User();
-    user.email = userData.email;
-    user.password = userData.password;
-    user.name = userData.name;
-    user.number = userData.number ?? '';  
-    user.countryName = userData.countryName ?? ''; 
-
-    if (userData.pictureFile) {
-      user.pictureFile = Buffer.from(userData.pictureFile, 'base64');
-    } else if (userData.pictureUrl) {
-      user.pictureUrl = userData.pictureUrl;
-    }
-
-    return this.userRepository.save(user);
+    
+    return this.userRepository.save(userData);
   }
 
   async update(id: number, updateData: UpdateUserDto): Promise<User | null> {
@@ -44,15 +32,7 @@ export class UserService {
     user.name = updateData.name ?? user.name;
     user.number = updateData.number ?? user.number;
     user.countryName = updateData.countryName ?? user.countryName;
-
-    if (updateData.pictureFile) {
-      user.pictureFile = Buffer.from(updateData.pictureFile, 'base64');
-      user.pictureUrl = undefined;
-    } else if (updateData.pictureUrl) {
-      user.pictureUrl = updateData.pictureUrl;
-      user.pictureFile = undefined;
-    }
-
+    user.pictureUrl = updateData.pictureUrl ?? user.pictureUrl;
     return this.userRepository.save(user);
   }
 

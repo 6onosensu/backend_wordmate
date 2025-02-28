@@ -9,6 +9,7 @@ import { UserModule } from "../user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "../user/entities/user.entity";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { UserService } from "../user/user.service";
 
 
 @Module({
@@ -21,13 +22,13 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'default_secret',
-        signOptions: { expiresIn: '3h' },
+        signOptions: { expiresIn: '60d' },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, AuthGuard],
+  providers: [AuthService, JwtStrategy, AuthGuard, UserService],
   exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
