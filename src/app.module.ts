@@ -13,10 +13,10 @@ import { UserGoalModule } from './modules/user-goal/user-goal.module';
 
 @Module({
   imports: [
+    AuthModule,
     GoalModule, 
     UserGoalModule,
     StatusModule, 
-    AuthModule,
     UserModule,
     PartOfSpeechModule,
     WordModule,
@@ -28,6 +28,7 @@ import { UserGoalModule } from './modules/user-goal/user-goal.module';
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
   ],
 })
