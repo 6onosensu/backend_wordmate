@@ -1,4 +1,4 @@
-import { IsInt, IsString, IsEnum, IsOptional } from "class-validator";
+import { IsInt, IsOptional, IsBoolean } from "class-validator";
 
 export class CreateUserWordDto {
   @IsInt()
@@ -12,6 +12,9 @@ export class CreateUserWordDto {
 
   @IsOptional()
   repetitionDate?: Date;
+
+  @IsBoolean()
+  due: boolean;
 
   @IsOptional()
   @IsInt()

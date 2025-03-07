@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { UserWordService } from './user-word.service';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
@@ -23,8 +23,8 @@ export class UserWordController {
   }
 
   @Post()
-  create(@Body() dto: CreateUserWordDto): Promise<UserWord> {
-    return this.userWordService.create(dto);
+  create(@Body() dto: CreateUserWordDto, @Req() req): Promise<UserWord> {
+    return this.userWordService.create({ ...dto, userId: req.user.id });
   }
 
   @Patch(':id')

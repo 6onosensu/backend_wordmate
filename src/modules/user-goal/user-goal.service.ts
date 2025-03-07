@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserGoal } from './entites/user-goal.entity';
@@ -11,23 +11,40 @@ export class UserGoalService {
     private userGoalRepository: Repository<UserGoal>,
   ) {}
 
-  create(userGoalDto: CreateUserGoalDto) {
+  create(userId: number, userGoalDto: CreateUserGoalDto) {
     const userGoal = this.userGoalRepository.create({
-      user: { id: userGoalDto.userId } as any,  
+      user: { id: userId } as any,  
       goal: { id: userGoalDto.goalId } as any, 
     });
     return this.userGoalRepository.save(userGoal);
   }
 
-  findAll() {
-    return this.userGoalRepository.find({ relations: ['user', 'goal'] });
+  findAll(userId: number) {
+    return this.userGoalRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'goal'],
+    });
   }
 
-  findOne(id: number) {
-    return this.userGoalRepository.findOne({ where: { id }, relations: ['user', 'goal'] });
+  async findOne(userId: number, id: number) {
+    const goal = await this.userGoalRepository.findOne({ 
+      where: { id, user: { id: userId } }, 
+      relations: ['user', 'goal'],
+    });
+
+    if (!goal) {
+      throw new ForbiddenException('You do not have permission to access this goal.');
+    }
+
+    return goal;
   }
 
-  async remove(id: number) {
+  async remove(userId: number, id: number) {
+    const goal = await this.findOne(userId, id);
+    if (!goal) {
+      throw new ForbiddenException('You do not have permission to delete this goal.');
+    }
+
     await this.userGoalRepository.delete(id);
     return { deleted: true };
   }

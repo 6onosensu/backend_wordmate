@@ -19,6 +19,9 @@ export class UserWord extends BaseEntityWithTimestamps {
   @Column({  type: "timestamp", nullable: true })
   repetitionDate?: Date;
 
+  @Column({ type: "bool" })
+  due?: boolean;
+
   @Column({ type: "int", default: 0 })
   repetitionCount: number;
 }
