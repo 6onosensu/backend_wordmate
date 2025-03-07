@@ -1,22 +1,25 @@
-import { IsInt, IsOptional, IsBoolean } from "class-validator";
+import { IsInt, IsString, IsOptional } from "class-validator";
 
 export class CreateUserWordDto {
   @IsInt()
   userId: number;
 
-  @IsInt()
-  meaningId: number;
+  @IsString()
+  word: string;
 
-  @IsInt()
-  statusId: number;
+  @IsString()
+  partOfSpeech: string;
 
-  @IsOptional()
-  repetitionDate?: Date;
-
-  @IsBoolean()
-  due: boolean;
+  @IsString()
+  definition: string; 
 
   @IsOptional()
-  @IsInt()
-  repetitionCount?: number;
+  @IsString()
+  example?: string; 
+
+  @IsOptional()
+  synonymMeaningIds?: number[];
+
+  @IsOptional()
+  antonymMeaningIds?: number[];
 }

@@ -6,6 +6,8 @@ import { User } from "src/modules/user/entities/user.entity";
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { Meaning } from '../meaning/entities/meaning.entity';
 import { Status } from '../status/entities/status.entity';
+import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
+import { Word } from '../word/entities/word.entity';
 
 @Injectable()
 export class UserWordService {
@@ -18,6 +20,12 @@ export class UserWordService {
 
     @InjectRepository(Meaning)
     private readonly meaningRepository: Repository<Meaning>,
+
+    @InjectRepository(Word)
+    private readonly wordRepository: Repository<Word>,
+
+    @InjectRepository(PartOfSpeech)
+    private readonly partOfSpeechRepository: Repository<PartOfSpeech>,
 
     @InjectRepository(Status)
     private readonly statusRepository: Repository<Status>
@@ -39,13 +47,35 @@ export class UserWordService {
     });
     if (!user) throw new NotFoundException(`User with ID ${dto.userId} not found`);
 
-    const meaning = await this.meaningRepository.findOne({ 
-      where: { id: dto.meaningId } 
-    });
-    if (!meaning) throw new NotFoundException(`Meaning with ID ${dto.meaningId} not found`);
+    let word = await this.wordRepository.findOne({ where: { word: dto.word } });
+    if (!word) {
+      word = this.wordRepository.create({ word: dto.word });
+      await this.wordRepository.save(word);
+    }
 
-    const status = await this.statusRepository.findOne({ where: { id: dto.statusId } });
-    if (!status) throw new NotFoundException(`Status with ID ${dto.statusId} not found`);
+    let partOfSpeech = await this.partOfSpeechRepository.findOne({ where: { title: dto.partOfSpeech } });
+    if (!partOfSpeech) {
+      partOfSpeech = this.partOfSpeechRepository.create({ title: dto.partOfSpeech });
+      await this.partOfSpeechRepository.save(partOfSpeech);
+    }
+
+    let meaning = await this.meaningRepository.findOne({ 
+      where: { word, partOfSpeech }
+    });
+    if (!meaning) {
+      meaning = this.meaningRepository.create({
+        word,
+        partOfSpeech,
+        definition: dto.definition,
+        example: dto.example,
+        synonymMeaningIds: dto.synonymMeaningIds,
+        antonymMeaningIds: dto.antonymMeaningIds,
+      });
+      await this.meaningRepository.save(meaning);
+    }
+
+    const status = await this.statusRepository.findOne({ where: { status: "To Explore" } });
+    if (!status) throw new NotFoundException(`Status "To Explore" not found`);
 
     const existingUserWord = await this.userWordRepository.findOne({
       where: { 
@@ -54,35 +84,22 @@ export class UserWordService {
       },
     });
     if (existingUserWord) {
-      throw new ConflictException(`UserWord already exists for User ID ${dto.userId} and Meaning ID ${dto.meaningId}`);
+      throw new ConflictException(`UserWord already exists for User ID ${dto.userId} and Meaning ID ${meaning.id}`);
     }
 
     const userWord = this.userWordRepository.create({
       user,
       meaning,
       status,
-      repetitionDate: dto.repetitionDate || undefined,
-      repetitionCount: dto.repetitionCount ?? 0,
+      repetitionDate: new Date(),
+      due: false,
+      repetitionCount: 0,
     });
 
     return this.userWordRepository.save(userWord)
   }
 
-  async update(id: number, dto: Partial<CreateUserWordDto>): Promise<UserWord> {
-    const userWord = await this.findOne(id);
-
-    const status = await this.statusRepository.findOne({ where: { id: dto.statusId } });
-
-    if (dto.statusId) {
-      const status = await this.statusRepository.findOne({ where: { id: dto.statusId } });
-      if (!status) throw new NotFoundException(`Status with ID ${dto.statusId} not found`);
-      userWord.status = status;
-    }
-    if (dto.repetitionDate) userWord.repetitionDate = dto.repetitionDate;
-    if (dto.repetitionCount !== undefined) userWord.repetitionCount = dto.repetitionCount;
-
-    return this.userWordRepository.save(userWord);
-  }
+ 
 
   async delete(id: number): Promise<void> {
     const userWord = await this.findOne(id);
