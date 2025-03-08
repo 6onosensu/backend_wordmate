@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 import { User } from "src/modules/user/entities/user.entity";
 import { Meaning } from '../meaning/entities/meaning.entity';
@@ -114,4 +114,20 @@ export async function ensureUserWordDoesNotExist(
   if (existingUserWord) {
     throw new ConflictException(`UserWord already exists for User ID ${userId} and Meaning ID ${meaningId}`);
   }
+}
+
+export async function updateDueStatus(
+  userWordRepository: Repository<UserWord>
+): Promise<void> {
+  const wordsToUpdate = await userWordRepository.find({
+    where: { 
+      repetitionDate: LessThanOrEqual(new Date()) 
+    }
+  });
+
+  for (const word of wordsToUpdate) {
+    word.due = true;
+  }
+
+  await userWordRepository.save(wordsToUpdate);
 }

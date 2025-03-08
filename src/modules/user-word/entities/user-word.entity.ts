@@ -7,21 +7,45 @@ import { Column, Entity, ManyToOne, Unique } from "typeorm";
 @Entity()
 @Unique(['user', 'meaning']) 
 export class UserWord extends BaseEntityWithTimestamps {
-  @ManyToOne(() => User, { eager: true, onDelete: "CASCADE" })
+  @ManyToOne(() => User, { 
+    eager: true, 
+    onDelete: "CASCADE" 
+  })
   user: User;
 
-  @ManyToOne(() => Meaning, { eager: true, onDelete: "CASCADE" })
+  @ManyToOne(() => Meaning, { 
+    eager: true,
+    onDelete: "CASCADE" 
+  })
   meaning: Meaning;
 
-  @ManyToOne(() => Status, { eager: true, onDelete: "CASCADE" })
+  @ManyToOne(() => Status, { 
+    eager: true, 
+    onDelete: "CASCADE" 
+  })
   status: Status; 
 
-  @Column({  type: "timestamp", nullable: true })
-  repetitionDate?: Date;
+  @Column({ 
+    type: "timestamp", 
+    default: new Date() 
+  })
+  repetitionDate: Date;
 
-  @Column({ type: "bool" })
-  due?: boolean;
+  @Column({ 
+    type: "bool", 
+    default: false 
+  })
+  due: boolean;
 
-  @Column({ type: "int", default: 0 })
+  @Column({ 
+    type: "int", 
+    default: 0 
+  })
   repetitionCount: number;
+
+  @Column({ 
+    type: "int", 
+    default: 0 
+  })
+  intervalRepetitions: number;
 }

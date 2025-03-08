@@ -16,6 +16,6 @@ import { MeaningModule } from '../meaning/meaning.module';
     MeaningModule,
   ],
   controllers: [UserWordController],
-  providers: [ UserWordService],
+  providers: [UserWordService],
 })
 export class UserWordModule {}

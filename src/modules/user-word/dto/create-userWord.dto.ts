@@ -7,6 +7,10 @@ export class CreateUserWordDto {
   @IsString()
   word: string;
 
+  @IsOptional()
+  @IsString()
+  audio?: string;
+
   @IsString()
   partOfSpeech: string;
 

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserWord } from './entities/user-word.entity';
 import { LessThanOrEqual, Repository } from 'typeorm';
@@ -8,10 +8,10 @@ import { Meaning } from '../meaning/entities/meaning.entity';
 import { Status } from '../status/entities/status.entity';
 import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 import { Word } from '../word/entities/word.entity';
-import { ensureUserWordDoesNotExist, getOrCreateMeaning, getOrCreatePartOfSpeech, getOrCreateWord, getStatus, getUser } from './user-word.helpers';
+import { ensureUserWordDoesNotExist, getOrCreateMeaning, getOrCreatePartOfSpeech, getOrCreateWord, getStatus, getUser, updateDueStatus } from './user-word.helpers';
 
 @Injectable()
-export class UserWordService {
+export class UserWordService implements OnModuleInit {
   constructor(
     @InjectRepository(UserWord)
     private readonly userWordRepository: Repository<UserWord>,
@@ -31,6 +31,12 @@ export class UserWordService {
     @InjectRepository(Status)
     private readonly statusRepository: Repository<Status>
   ) {}
+
+  onModuleInit() {
+    setInterval(() => {
+      updateDueStatus(this.userWordRepository);
+    }, 24 * 60 * 60 * 1000);
+  }
 
   async findAll(): Promise<UserWord[]> {
     return this.userWordRepository.find();
@@ -54,7 +60,7 @@ export class UserWordService {
     await ensureUserWordDoesNotExist(user.id, meaning.id, this.userWordRepository);
 
     return this.userWordRepository.save(this.userWordRepository.create({
-      user, meaning, status, repetitionDate: new Date(), due: false, repetitionCount: 0,
+      user, meaning, status,
     }));
   }
 
