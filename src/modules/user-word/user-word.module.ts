@@ -8,14 +8,22 @@ import { Meaning } from '../meaning/entities/meaning.entity';
 import { Status } from '../status/entities/status.entity';
 import { StatusModule } from '../status/status.module';
 import { MeaningModule } from '../meaning/meaning.module';
+import { Word } from '../word/entities/word.entity';
+import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserWord, User, Meaning, Status]),
+    TypeOrmModule.forFeature([UserWord, 
+      User, 
+      Meaning, 
+      Word,
+      PartOfSpeech, 
+      Status]),
     StatusModule,
     MeaningModule,
   ],
   controllers: [UserWordController],
   providers: [UserWordService],
+  exports: [UserWordService],
 })
 export class UserWordModule {}

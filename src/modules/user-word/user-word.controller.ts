@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { UserWordService } from './user-word.service';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller("userWords")
 export class UserWordController {
   constructor(private readonly userWordService: UserWordService) {}
@@ -50,12 +52,18 @@ export class UserWordController {
     return this.userWordService.delete(id, req.user.id)
   }
 
-  @Get('/user/:userId/status/:statusId')
+  @Get('/status')
   findByUserAndStatus(
-    @Param('userId') userId: number,
-    @Param('statusId') statusId: number,
+    @Req() req,
+    @Query('status') status: string,
+    @Query('due') due: string, 
   ): Promise<UserWord[]> {
-    return this.userWordService.findByUserAndStatus(userId, statusId);
+    console.log(": ", req.user.id, status, due === 'true' );
+    return this.userWordService.findByUserAndStatus(
+      req.user.id, 
+      status,
+      due === 'true'
+    );
   }
 
 }

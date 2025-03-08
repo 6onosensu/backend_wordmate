@@ -131,3 +131,13 @@ export async function updateDueStatus(
 
   await userWordRepository.save(wordsToUpdate);
 }
+
+export function calculateNextRepetitionDate(intervalRepetitions: number): Date {
+  const intervals = [1, 3, 7, 14, 30];
+  const daysToAdd = intervals[Math.min(intervalRepetitions, intervals.length - 1)];
+
+  const nextDate = new Date();
+  nextDate.setDate(nextDate.getDate() + daysToAdd);
+
+  return nextDate;
+}

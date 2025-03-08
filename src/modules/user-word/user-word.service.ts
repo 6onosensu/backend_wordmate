@@ -1,14 +1,23 @@
-import { Injectable, NotFoundException, ConflictException, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserWord } from './entities/user-word.entity';
-import { LessThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from "src/modules/user/entities/user.entity";
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { Meaning } from '../meaning/entities/meaning.entity';
 import { Status } from '../status/entities/status.entity';
 import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 import { Word } from '../word/entities/word.entity';
-import { ensureUserWordDoesNotExist, getOrCreateMeaning, getOrCreatePartOfSpeech, getOrCreateWord, getStatus, getUser, updateDueStatus } from './user-word.helpers';
+import { 
+  calculateNextRepetitionDate, 
+  ensureUserWordDoesNotExist, 
+  getOrCreateMeaning, 
+  getOrCreatePartOfSpeech, 
+  getOrCreateWord, 
+  getStatus, 
+  getUser, 
+  updateDueStatus 
+} from './user-word.helpers';
 
 @Injectable()
 export class UserWordService implements OnModuleInit {
@@ -88,17 +97,26 @@ export class UserWordService implements OnModuleInit {
     await this.userWordRepository.remove(userWord);
   }
 
-  async findByUserAndStatus(userId: number, statusId: number): Promise<UserWord[]> {
+  async findByUserAndStatus(
+    userId: number, 
+    status: string, 
+    isDue: boolean
+  ): Promise<UserWord[]> {
+    const statusEntity = await getStatus(
+      status, 
+      this.statusRepository
+    );
     const userWordList = await this.userWordRepository.find({
       where: { 
         user: { id: userId }, 
-        status: { id: statusId } 
+        status: { id: statusEntity.id },
+        due: isDue,
       },
       relations: ['user', 'meaning', 'status'],
     });
   
     if (userWordList.length === 0) {
-      throw new NotFoundException(`No UserWords found for User ID ${userId} with Status ID ${statusId}`);
+      throw new NotFoundException(`No UserWords found for User ID ${userId} with Status ID ${status}`);
     }
   
     return userWordList;

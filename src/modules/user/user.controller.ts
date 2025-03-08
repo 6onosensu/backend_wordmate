@@ -4,8 +4,6 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import type { Multer } from 'multer';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -20,11 +18,6 @@ export class UserController {
   @Get('me')
   async getMe(@Req() req) {
     const user = await this.userService.findOne(req.user.id);
-
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
-
     return user;
   }
 

@@ -21,7 +21,6 @@ export class UserService {
   }
 
   async create(userData: CreateUserDto): Promise<User> {
-    
     return this.userRepository.save(userData);
   }
 
