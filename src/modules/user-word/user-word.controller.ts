@@ -13,13 +13,11 @@ export class UserWordController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<UserWord> {
-    return this.userWordService.findOne(id);
-  }
-
-  @Get('toRepeat/:userId')
-  findWordsToRepeat(@Param('userId') userId: number): Promise<UserWord[]> {
-    return this.userWordService.findWordsToRepeat(userId);
+  findOne(
+    @Param('id') id: number,
+    @Req() req
+  ): Promise<UserWord> {
+    return this.userWordService.findOne(id, req.user.id);
   }
 
   @Post()
@@ -28,13 +26,28 @@ export class UserWordController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() dto: Partial<CreateUserWordDto>): Promise<UserWord> {
-    return this.userWordService.update(id, dto);
+  update(
+    @Param('id') id: number, 
+    @Body() dto: { 
+      repetitionCount: number, 
+      intervalRepetitions: number 
+    },
+    @Req() req
+  ) {
+    return this.userWordService.update(
+      id, 
+      dto.repetitionCount, 
+      dto.intervalRepetitions,
+      req.user.id
+    );
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number): Promise<void> {
-    return this.userWordService.delete(id)
+  delete(
+    @Param('id') id: number,
+    @Req() req
+  ): Promise<void> {
+    return this.userWordService.delete(id, req.user.id)
   }
 
   @Get('/user/:userId/status/:statusId')

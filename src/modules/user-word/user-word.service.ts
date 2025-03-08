@@ -36,9 +36,11 @@ export class UserWordService {
     return this.userWordRepository.find();
   }
 
-  async findOne(id: number): Promise<UserWord> {
-    const userWord = await this.userWordRepository.findOne({ where: { id } });
-    if (!userWord) throw new NotFoundException(`UserWord with ID ${id} not found`);
+  async findOne(id: number, userId: number): Promise<UserWord> {
+    const userWord = await this.userWordRepository.findOne({
+      where: { id, user: { id: userId } },
+    });
+    if (!userWord) throw new NotFoundException(`UserWord with ID ${id} not found for this user`);
     return userWord;
   }
 
@@ -56,8 +58,27 @@ export class UserWordService {
     }));
   }
 
-  async delete(id: number): Promise<void> {
-    const userWord = await this.findOne(id);
+  async update(id: number, 
+    repetitionCount: number, 
+    intervalRepetitions: number,
+    userId: number
+  ): Promise<UserWord> {
+
+    const userWord = await this.findOne(id, userId);
+  
+    userWord.repetitionCount = Math.min(repetitionCount, 4);
+  
+    if (userWord.repetitionCount === 4) {
+      userWord.repetitionDate = calculateNextRepetitionDate(intervalRepetitions);
+    }
+  
+    userWord.due = userWord.repetitionDate ? userWord.repetitionDate <= new Date() : false;
+  
+    return this.userWordRepository.save(userWord);
+  }
+
+  async delete(id: number, userId: number): Promise<void> {
+    const userWord = await this.findOne(id, userId);
     await this.userWordRepository.remove(userWord);
   }
 
@@ -75,18 +96,5 @@ export class UserWordService {
     }
   
     return userWordList;
-  }
-
-  async findWordsToRepeat(userId: number): Promise<UserWord[]> {
-    const now = new Date();
-
-    return this.userWordRepository.find({
-      where: {
-        user: { id: userId },
-        status: { id: 3},
-        repetitionDate: LessThanOrEqual(now),
-      },
-      relations: ['meaning', 'status']
-    })
   }
 }
