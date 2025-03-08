@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UnauthorizedException, UseGuards, OnModuleInit } from '@nestjs/common';
 import { UserWordService } from './user-word.service';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
-@UseGuards(AuthGuard)
 @Controller("userWords")
+@UseGuards(AuthGuard)
 export class UserWordController {
   constructor(private readonly userWordService: UserWordService) {}
 
@@ -24,7 +24,12 @@ export class UserWordController {
 
   @Post()
   create(@Body() dto: CreateUserWordDto, @Req() req): Promise<UserWord> {
-    return this.userWordService.create({ ...dto, userId: req.user.id });
+    if (!req.user || !req.user.id) {
+      throw new UnauthorizedException("User not authenticated");
+    }
+
+    const requestData = { ...dto, userId: req.user.id };
+    return this.userWordService.create(requestData);
   }
 
   @Patch(':id')

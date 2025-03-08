@@ -4,7 +4,6 @@ import { UserWord } from './entities/user-word.entity';
 import { Repository } from 'typeorm';
 import { User } from "src/modules/user/entities/user.entity";
 import { CreateUserWordDto } from './dto/create-userWord.dto';
-import { Meaning } from '../meaning/entities/meaning.entity';
 import { Status } from '../status/entities/status.entity';
 import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 import { Word } from '../word/entities/word.entity';
@@ -18,6 +17,7 @@ import {
   getUser, 
   updateDueStatus 
 } from './user-word.helpers';
+import { MeaningService } from '../meaning/meaning.service';
 
 @Injectable()
 export class UserWordService implements OnModuleInit {
@@ -28,9 +28,6 @@ export class UserWordService implements OnModuleInit {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
-    @InjectRepository(Meaning)
-    private readonly meaningRepository: Repository<Meaning>,
-
     @InjectRepository(Word)
     private readonly wordRepository: Repository<Word>,
 
@@ -38,7 +35,9 @@ export class UserWordService implements OnModuleInit {
     private readonly partOfSpeechRepository: Repository<PartOfSpeech>,
 
     @InjectRepository(Status)
-    private readonly statusRepository: Repository<Status>
+    private readonly statusRepository: Repository<Status>,
+    
+    private readonly meaningService: MeaningService
   ) {}
 
   onModuleInit() {
@@ -63,7 +62,7 @@ export class UserWordService implements OnModuleInit {
     const user = await getUser(dto.userId, this.userRepository);
     const word = await getOrCreateWord(dto.word, this.wordRepository);
     const partOfSpeech = await getOrCreatePartOfSpeech(dto.partOfSpeech, this.partOfSpeechRepository);
-    const meaning = await getOrCreateMeaning(word, partOfSpeech, dto, this.meaningRepository);
+    const meaning = await getOrCreateMeaning(word, partOfSpeech, dto, this.meaningService);
     const status = await getStatus("To Explore", this.statusRepository);
 
     await ensureUserWordDoesNotExist(user.id, meaning.id, this.userWordRepository);
@@ -106,6 +105,11 @@ export class UserWordService implements OnModuleInit {
       status, 
       this.statusRepository
     );
+
+    if (!statusEntity) {
+      throw new NotFoundException(`Status "${status}" not found`);
+    }
+
     const userWordList = await this.userWordRepository.find({
       where: { 
         user: { id: userId }, 

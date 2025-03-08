@@ -22,8 +22,8 @@ export class CreateUserWordDto {
   example?: string; 
 
   @IsOptional()
-  synonymMeaningIds?: number[];
+  synonyms?: string[];
 
   @IsOptional()
-  antonymMeaningIds?: number[];
+  antonyms?: string[];
 }

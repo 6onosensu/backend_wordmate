@@ -7,6 +7,8 @@ import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 import { Word } from '../word/entities/word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { UserWord } from './entities/user-word.entity';
+import { CreateMeaningDto } from '../meaning/dto/create-meaning.dto';
+import { MeaningService } from '../meaning/meaning.service';
 
 export async function getUser(
   userId: number, 
@@ -59,29 +61,19 @@ export async function getOrCreateMeaning(
   word: Word, 
   partOfSpeech: PartOfSpeech, 
   dto: CreateUserWordDto, 
-  meaningRepository: Repository<Meaning>
+  meaningService: MeaningService
 ): Promise<Meaning> {
-  let meaning = await meaningRepository.findOne({ 
-    where: { 
-      word: word, 
-      partOfSpeech: partOfSpeech 
-    } 
-  });
+  const createDto: CreateMeaningDto = {
+    word: word.word, 
+    audio: dto.audio || undefined,
+    partOfSpeech: partOfSpeech.title,
+    definition: dto.definition,
+    example: dto.example,
+    synonyms: dto.synonyms || [], 
+    antonyms: dto.antonyms || [],
+  };
 
-  if (!meaning) {
-    meaning = meaningRepository.create({
-      word,
-      partOfSpeech,
-      definition: dto.definition,
-      example: dto.example,
-      synonymMeaningIds: dto.synonymMeaningIds,
-      antonymMeaningIds: dto.antonymMeaningIds,
-    });
-
-    await meaningRepository.save(meaning);
-  }
-
-  return meaning;
+  return await meaningService.create(createDto);
 }
 
 export async function getStatus(

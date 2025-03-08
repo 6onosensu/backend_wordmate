@@ -21,7 +21,7 @@ export class UserWord extends BaseEntityWithTimestamps {
 
   @ManyToOne(() => Status, { 
     eager: true, 
-    onDelete: "CASCADE" 
+    onDelete: "CASCADE",
   })
   status: Status; 
 
