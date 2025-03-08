@@ -8,6 +8,7 @@ import { Meaning } from '../meaning/entities/meaning.entity';
 import { Status } from '../status/entities/status.entity';
 import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
 import { Word } from '../word/entities/word.entity';
+import { ensureUserWordDoesNotExist, getOrCreateMeaning, getOrCreatePartOfSpeech, getOrCreateWord, getStatus, getUser } from './user-word.helpers';
 
 @Injectable()
 export class UserWordService {
@@ -42,64 +43,18 @@ export class UserWordService {
   }
 
   async create(dto: CreateUserWordDto): Promise<UserWord> {
-    const user = await this.userRepository.findOne({ 
-      where: { id: dto.userId } 
-    });
-    if (!user) throw new NotFoundException(`User with ID ${dto.userId} not found`);
+    const user = await getUser(dto.userId, this.userRepository);
+    const word = await getOrCreateWord(dto.word, this.wordRepository);
+    const partOfSpeech = await getOrCreatePartOfSpeech(dto.partOfSpeech, this.partOfSpeechRepository);
+    const meaning = await getOrCreateMeaning(word, partOfSpeech, dto, this.meaningRepository);
+    const status = await getStatus("To Explore", this.statusRepository);
 
-    let word = await this.wordRepository.findOne({ where: { word: dto.word } });
-    if (!word) {
-      word = this.wordRepository.create({ word: dto.word });
-      await this.wordRepository.save(word);
-    }
+    await ensureUserWordDoesNotExist(user.id, meaning.id, this.userWordRepository);
 
-    let partOfSpeech = await this.partOfSpeechRepository.findOne({ where: { title: dto.partOfSpeech } });
-    if (!partOfSpeech) {
-      partOfSpeech = this.partOfSpeechRepository.create({ title: dto.partOfSpeech });
-      await this.partOfSpeechRepository.save(partOfSpeech);
-    }
-
-    let meaning = await this.meaningRepository.findOne({ 
-      where: { word, partOfSpeech }
-    });
-    if (!meaning) {
-      meaning = this.meaningRepository.create({
-        word,
-        partOfSpeech,
-        definition: dto.definition,
-        example: dto.example,
-        synonymMeaningIds: dto.synonymMeaningIds,
-        antonymMeaningIds: dto.antonymMeaningIds,
-      });
-      await this.meaningRepository.save(meaning);
-    }
-
-    const status = await this.statusRepository.findOne({ where: { status: "To Explore" } });
-    if (!status) throw new NotFoundException(`Status "To Explore" not found`);
-
-    const existingUserWord = await this.userWordRepository.findOne({
-      where: { 
-        user: { id: user.id }, 
-        meaning: { id: meaning.id } 
-      },
-    });
-    if (existingUserWord) {
-      throw new ConflictException(`UserWord already exists for User ID ${dto.userId} and Meaning ID ${meaning.id}`);
-    }
-
-    const userWord = this.userWordRepository.create({
-      user,
-      meaning,
-      status,
-      repetitionDate: new Date(),
-      due: false,
-      repetitionCount: 0,
-    });
-
-    return this.userWordRepository.save(userWord)
+    return this.userWordRepository.save(this.userWordRepository.create({
+      user, meaning, status, repetitionDate: new Date(), due: false, repetitionCount: 0,
+    }));
   }
-
- 
 
   async delete(id: number): Promise<void> {
     const userWord = await this.findOne(id);
