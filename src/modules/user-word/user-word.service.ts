@@ -70,7 +70,13 @@ export class UserWordService implements OnModuleInit {
         status: { id: statusEntity.id },
         due: isDue,
       },
-      relations: ['user', 'meaning', 'status'],
+      relations: [
+        'user', 
+        'meaning', 
+        'meaning.word', 
+        'meaning.partOfSpeech', 
+        'status'
+      ],
     });
   
     if (userWordList.length === 0) {
