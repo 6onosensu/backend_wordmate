@@ -60,14 +60,14 @@ export class UserWordService implements OnModuleInit {
       where: { status: decodedStatus } 
     });
 
-    if (!statusEntity) {
-      throw new NotFoundException(`Status "${decodedStatus}" not found`);
-    }
+  if (!statusEntity) {
+    throw new NotFoundException(`Status "${status}" not found`);
+  }
 
     const userWordList = await this.userWordRepository.find({
       where: { 
         user: { id: userId }, 
-        status: statusEntity,
+        status: { id: statusEntity.id },
         due: isDue,
       },
       relations: ['user', 'meaning', 'status'],
