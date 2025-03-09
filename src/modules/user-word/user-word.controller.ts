@@ -18,7 +18,6 @@ export class UserWordController {
     @Query('status') status: string,
     @Query('due') due: string, 
   ): Promise<UserWord[]> {
-    console.log("✅ Запрос получен на /userWords/status/filter", status, due);
     return this.userWordService.findByUserAndStatus(
       req.user.id, 
       status,
