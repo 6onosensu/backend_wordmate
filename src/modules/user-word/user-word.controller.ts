@@ -2,10 +2,8 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Unauthor
 import { UserWordService } from './user-word.service';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
-import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller("userWords")
-@UseGuards(AuthGuard)
 export class UserWordController {
   constructor(private readonly userWordService: UserWordService) {}
 
@@ -13,7 +11,20 @@ export class UserWordController {
   findAll(): Promise<UserWord[]> {
     return this.userWordService.findAll();
   }
-
+  
+  @Get('status/filter')
+  findByUserAndStatus(
+    @Req() req,
+    @Query('status') status: string,
+    @Query('due') due: string, 
+  ): Promise<UserWord[]> {
+    return this.userWordService.findByUserAndStatus(
+      req.user.id, 
+      status,
+      due === 'true'
+    );
+  }
+  
   @Get(':id')
   findOne(
     @Param('id') id: number,
@@ -23,11 +34,10 @@ export class UserWordController {
   }
 
   @Post()
-  create(@Body() dto: CreateUserWordDto, @Req() req): Promise<UserWord> {
-    if (!req.user || !req.user.id) {
-      throw new UnauthorizedException("User not authenticated");
-    }
-
+  create(
+    @Body() dto: CreateUserWordDto, 
+    @Req() req
+  ): Promise<UserWord> {
     const requestData = { ...dto, userId: req.user.id };
     return this.userWordService.create(requestData);
   }
@@ -56,19 +66,4 @@ export class UserWordController {
   ): Promise<void> {
     return this.userWordService.delete(id, req.user.id)
   }
-
-  @Get('/status')
-  findByUserAndStatus(
-    @Req() req,
-    @Query('status') status: string,
-    @Query('due') due: string, 
-  ): Promise<UserWord[]> {
-    console.log(": ", req.user.id, status, due === 'true' );
-    return this.userWordService.findByUserAndStatus(
-      req.user.id, 
-      status,
-      due === 'true'
-    );
-  }
-
 }

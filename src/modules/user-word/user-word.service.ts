@@ -49,6 +49,36 @@ export class UserWordService implements OnModuleInit {
   async findAll(): Promise<UserWord[]> {
     return this.userWordRepository.find();
   }
+  
+  async findByUserAndStatus(
+    userId: number, 
+    status: string, 
+    isDue: boolean
+  ): Promise<UserWord[]> {
+    const decodedStatus = decodeURIComponent(status);
+    const statusEntity = await this.statusRepository.findOne({ 
+      where: { status: decodedStatus } 
+    });
+
+    if (!statusEntity) {
+      throw new NotFoundException(`Status "${decodedStatus}" not found`);
+    }
+
+    const userWordList = await this.userWordRepository.find({
+      where: { 
+        user: { id: userId }, 
+        status: statusEntity,
+        due: isDue,
+      },
+      relations: ['user', 'meaning', 'status'],
+    });
+  
+    if (userWordList.length === 0) {
+      throw new NotFoundException(`No UserWords found for User ID ${userId} with Status ID ${status}`);
+    }
+  
+    return userWordList;
+  }
 
   async findOne(id: number, userId: number): Promise<UserWord> {
     const userWord = await this.userWordRepository.findOne({
@@ -94,35 +124,5 @@ export class UserWordService implements OnModuleInit {
   async delete(id: number, userId: number): Promise<void> {
     const userWord = await this.findOne(id, userId);
     await this.userWordRepository.remove(userWord);
-  }
-
-  async findByUserAndStatus(
-    userId: number, 
-    status: string, 
-    isDue: boolean
-  ): Promise<UserWord[]> {
-    const statusEntity = await getStatus(
-      status, 
-      this.statusRepository
-    );
-
-    if (!statusEntity) {
-      throw new NotFoundException(`Status "${status}" not found`);
-    }
-
-    const userWordList = await this.userWordRepository.find({
-      where: { 
-        user: { id: userId }, 
-        status: { id: statusEntity.id },
-        due: isDue,
-      },
-      relations: ['user', 'meaning', 'status'],
-    });
-  
-    if (userWordList.length === 0) {
-      throw new NotFoundException(`No UserWords found for User ID ${userId} with Status ID ${status}`);
-    }
-  
-    return userWordList;
   }
 }
