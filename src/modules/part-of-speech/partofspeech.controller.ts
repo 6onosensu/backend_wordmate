@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { PartOfSpeechService } from './partofspeech.service';
 import { CreatePartOfSpeechDto } from './dto/part-of-speech.dto';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('part-of-speech')
 export class PartOfSpeechController {
   constructor(private readonly partOfSpeechService: PartOfSpeechService) {}

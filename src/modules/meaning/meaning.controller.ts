@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { MeaningService } from './meaning.service';
 import { CreateMeaningDto } from './dto/create-meaning.dto';
 import { FindOneMeaningDto } from './dto/findOne-meaning.dto';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('meanings')
 export class MeaningController {
   constructor(private readonly meaningService: MeaningService) {}

@@ -14,7 +14,6 @@ async function bootstrap() {
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
   });
-  app.useGlobalGuards(new AuthGuard(app.get(Reflector)));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

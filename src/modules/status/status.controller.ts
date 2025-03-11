@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { StatusService } from './status.service';
 import { Status } from './entities/status.entity';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('status')
 export class StatusController {
   constructor(private readonly statusService: StatusService) {}
