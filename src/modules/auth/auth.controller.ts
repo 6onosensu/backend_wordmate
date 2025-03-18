@@ -2,8 +2,6 @@ import { Controller, Post, Body, UseInterceptors, UploadedFile } from '@nestjs/c
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Multer } from 'multer';
 
 @Controller('auth')
 export class AuthController {
@@ -13,11 +11,15 @@ export class AuthController {
   async register(@Body() registerDto: CreateUserDto) {
     return this.authService.register(registerDto);
   }
-  
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto.email, loginDto.password);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body("email") email: string) {
+    return this.authService.forgotPassword(email);
   }
 }
 

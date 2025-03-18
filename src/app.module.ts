@@ -10,6 +10,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { UserWordModule } from './modules/user-word/user-word.module';
 import { UserGoalModule } from './modules/user-goal/user-goal.module';
+import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import { MailerModule } from "@nestjs-modules/mailer";
+import { join } from "path";
 
 @Module({
   imports: [
@@ -30,6 +33,23 @@ import { UserGoalModule } from './modules/user-goal/user-goal.module';
       synchronize: true,
       logging: true,
     }),
+    MailerModule.forRoot({
+      transport: {
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER, 
+          pass: process.env.EMAIL_PASS,
+        },
+      },
+      defaults: {
+        from: '"WordMate Support" <wordmate.team@gmail.com>',
+      },
+      template: {
+        dir: join(__dirname, "templates"),
+        adapter: new HandlebarsAdapter(), 
+        options: { strict: true },
+      },
+    })
   ],
 })
 export class AppModule {}
