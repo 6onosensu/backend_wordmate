@@ -73,4 +73,24 @@ export class AuthService {
 
     return { message: "Password reset link has been sent to your email." };
   }
+
+  async resetPassword(token: string, newPassword: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      const user = await this.userService.findByEmail(payload.email);
+  
+      if (!user) {
+        throw new NotFoundException("User not found.");
+      }
+  
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+  
+      await this.userRepository.save(user);
+  
+      return { message: "Password has been successfully reset!" };
+    } catch (error) {
+      throw new UnauthorizedException("Invalid or expired token.");
+    }
+  }
 }
