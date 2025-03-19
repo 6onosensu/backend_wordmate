@@ -1,7 +1,8 @@
-import { Controller, Post, Body, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Body, Delete, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { AuthGuard } from "../auth/guards/auth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +29,12 @@ export class AuthController {
     @Body("newPassword") newPassword: string
   ) {
     return this.authService.resetPassword(token, newPassword);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete("delete-account")
+  async deleteAccount(@Req() req) {
+    return this.authService.deleteAccount(req.user.id);
   }
 }
 

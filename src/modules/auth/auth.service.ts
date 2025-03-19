@@ -93,4 +93,18 @@ export class AuthService {
       throw new UnauthorizedException("Invalid or expired token.");
     }
   }
+
+  async deleteAccount(userId: number) {
+    const user = await this.userRepository.findOne({ 
+      where: { id: userId } 
+    });
+
+    if (!user) {
+      throw new NotFoundException("User not found.");
+    }
+
+    await this.userRepository.remove(user);
+
+    return { message: "Account deleted successfully." };
+  }
 }
