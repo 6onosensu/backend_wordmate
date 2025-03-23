@@ -7,6 +7,7 @@ import { User } from '../user/entities/user.entity';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -106,5 +107,15 @@ export class AuthService {
     await this.userRepository.remove(user);
 
     return { message: "Account deleted successfully." };
+  }
+
+  async updateAccount(userId: number, data: UpdateUserDto) {
+    const updatedUser = await this.userService.update(userId, data);
+
+    if (!updatedUser) {
+      throw new NotFoundException("User not found or update failed.");
+    }
+    
+    return { message: "Account updated successfully.", user: updatedUser };
   }
 }

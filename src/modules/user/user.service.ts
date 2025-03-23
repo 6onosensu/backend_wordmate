@@ -24,14 +24,11 @@ export class UserService {
     return this.userRepository.save(userData);
   }
 
-  async update(id: number, updateData: UpdateUserDto): Promise<User | null> {
+  async update(id: number, updateData: Partial<UpdateUserDto>): Promise<User | null> {
     const user = await this.findOne(id);
     if (!user) return null;
 
-    user.name = updateData.name ?? user.name;
-    user.number = updateData.number ?? user.number;
-    user.countryName = updateData.countryName ?? user.countryName;
-    user.pictureUrl = updateData.pictureUrl ?? user.pictureUrl;
+    Object.assign(user, updateData);
     return this.userRepository.save(user);
   }
 

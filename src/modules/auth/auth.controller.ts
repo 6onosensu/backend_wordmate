@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Delete, UseGuards, Req, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthGuard } from "../auth/guards/auth.guard";
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,15 @@ export class AuthController {
     @Body("newPassword") newPassword: string
   ) {
     return this.authService.resetPassword(token, newPassword);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch("update-account")
+  async updateAccount(
+    @Req() req,
+    @Body() data: UpdateUserDto
+  ) {
+    return this.authService.updateAccount(req.user.id, data);
   }
 
   @UseGuards(AuthGuard)
