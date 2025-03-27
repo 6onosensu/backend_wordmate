@@ -33,7 +33,7 @@ export class UserWord extends BaseEntityWithTimestamps {
 
   @Column({ 
     type: "bool", 
-    default: false 
+    default: true 
   })
   due: boolean;
 
