@@ -1,8 +1,6 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
-import { AuthGuard } from './modules/auth/guards/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
