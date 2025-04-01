@@ -8,6 +8,6 @@ import { PartOfSpeechController } from './partofspeech.controller';
   imports: [TypeOrmModule.forFeature([PartOfSpeech])],
   controllers: [PartOfSpeechController],
   providers: [PartOfSpeechService],
-  exports: [TypeOrmModule],
+  exports: [PartOfSpeechService],
 })
 export class PartOfSpeechModule {}

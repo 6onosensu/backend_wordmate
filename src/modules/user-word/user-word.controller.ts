@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UnauthorizedException, UseGuards, OnModuleInit } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, } from '@nestjs/common';
 import { UserWordService } from './user-word.service';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
@@ -8,11 +8,6 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 @Controller("userWords")
 export class UserWordController {
   constructor(private readonly userWordService: UserWordService) {}
-
-  @Get()
-  findAll(): Promise<UserWord[]> {
-    return this.userWordService.findAll();
-  }
   
   @Get('status/filter')
   findByUserAndStatus(

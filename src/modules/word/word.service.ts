@@ -24,6 +24,18 @@ export class WordService {
     return this.wordRepository.save(word);
   }
 
+  async findOrCreateWord(dto: CreateWordDto): Promise<Word> {
+    let word = await this.wordRepository.findOne({ 
+      where: { word: dto.word } 
+    });
+
+    if (!word) {
+      word = await this.create(dto);
+    }
+
+    return word;
+  }
+
   async update(id: number, dto: CreateWordDto): Promise<Word | null> {
     const word = await this.findOne(id);
     if (!word) return null;
@@ -31,9 +43,5 @@ export class WordService {
     word.word = dto.word;
     word.audio = dto.audio;
     return this.wordRepository.save(word);
-  }
-
-  async delete(id: number): Promise<void> {
-    await this.wordRepository.delete(id);
   }
 }

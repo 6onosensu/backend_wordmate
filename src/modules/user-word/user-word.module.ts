@@ -10,17 +10,25 @@ import { StatusModule } from '../status/status.module';
 import { MeaningModule } from '../meaning/meaning.module';
 import { Word } from '../word/entities/word.entity';
 import { PartOfSpeech } from '../part-of-speech/entities/part-of-speech.entity';
+import { UserModule } from '../user/user.module';
+import { WordModule } from '../word/word.module';
+import { PartOfSpeechModule } from '../part-of-speech/partofspeech.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserWord, 
+    TypeOrmModule.forFeature([
+      UserWord, 
       User, 
       Meaning, 
       Word,
       PartOfSpeech, 
-      Status]),
+      Status
+    ]),
+    UserModule,
+    WordModule, 
+    MeaningModule, 
+    PartOfSpeechModule, 
     StatusModule,
-    MeaningModule,
   ],
   controllers: [UserWordController],
   providers: [UserWordService],

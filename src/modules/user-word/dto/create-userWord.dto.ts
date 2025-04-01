@@ -27,3 +27,4 @@ export class CreateUserWordDto {
   @IsOptional()
   antonyms?: string[];
 }
+ 

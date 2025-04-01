@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateWordDto } from './dto/create-word.dto';
 import { WordService } from './word.service';
 import { AuthGuard } from '../auth/guards/auth.guard';
@@ -26,11 +26,6 @@ export class WordController {
   @Patch(':id')
   update(@Param('id') id: number, @Body() updateWordDto: CreateWordDto) {
     return this.wordService.update(id, updateWordDto);
-  }
-
-  @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.wordService.delete(id);
   }
 }
 

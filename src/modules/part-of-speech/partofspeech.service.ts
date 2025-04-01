@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PartOfSpeech } from './entities/part-of-speech.entity';
 import { Repository } from 'typeorm';
+import { title } from 'process';
 
 @Injectable()
 export class PartOfSpeechService {
@@ -10,28 +11,20 @@ export class PartOfSpeechService {
     private readonly partOfSpeechRepository: Repository<PartOfSpeech>,
   ) {}
 
-  async findAll(): Promise<PartOfSpeech[]> {
-    return this.partOfSpeechRepository.find();
-  }
-
-  async findOne(id: number): Promise<PartOfSpeech | null> {
-    return this.partOfSpeechRepository.findOne({ where: {id} });
-  }
-
-  async create(title: string): Promise<PartOfSpeech | null> {
+  async create(title: string): Promise<PartOfSpeech> {
     const partOfSpeech = this.partOfSpeechRepository.create({ title })
     return this.partOfSpeechRepository.save(partOfSpeech);
   }
 
-  async update(id: number, title: string): Promise<PartOfSpeech | null> {
-    const partOfSpeech = await this.findOne(id);
-    if (!partOfSpeech) return null;
-
-    partOfSpeech.title = title;
-    return this.partOfSpeechRepository.save(partOfSpeech);
-  }
-
-  async delete(id: number): Promise<void> {
-    await this.partOfSpeechRepository.delete(id);
+  async findOrCreatePartOfSpeech(title: string): Promise<PartOfSpeech> {
+    let partOfSpeech = await this.partOfSpeechRepository.findOne({ 
+      where: { title: title } 
+    });
+  
+    if (!partOfSpeech) {
+      partOfSpeech = await this.create(title);
+    }
+  
+    return partOfSpeech;
   }
 }

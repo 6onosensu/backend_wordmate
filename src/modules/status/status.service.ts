@@ -32,25 +32,20 @@ export class StatusService implements OnModuleInit {
     return this.statusRepository.find();
   }
 
-  async findOne(id: number): Promise<Status> {
-    const status = await this.statusRepository.findOne({ where: { id } });
-    if (!status) throw new NotFoundException(`Status with ID ${id} not found`);
+  async findStatusByTitle(title): Promise<Status> {
+    const status = await this.statusRepository.findOne({ 
+      where: { status: title } 
+    });
+  
+    if (!status) {
+      throw new NotFoundException(`Status "${title}" not found`);
+    }
+  
     return status;
   }
 
   async create(statusText: string): Promise<Status> {
     const newStatus = this.statusRepository.create({ status: statusText });
     return this.statusRepository.save(newStatus);
-  }
-
-  async update(id: number, statusText: string): Promise<Status> {
-    const status = await this.findOne(id);
-    status.status = statusText;
-    return this.statusRepository.save(status);
-  }
-
-  async delete(id: number): Promise<void> {
-    const status = await this.findOne(id);
-    await this.statusRepository.remove(status);
   }
 }
