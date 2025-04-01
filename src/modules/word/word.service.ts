@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
 import { Word } from './entities/word.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
 
 @Injectable()
@@ -13,6 +13,15 @@ export class WordService {
 
   async findAll(): Promise<Word[]> {
     return this.wordRepository.find();
+  }
+
+  async findWordsByIds(wordIds: number[]): Promise<string[]> {
+    if (!wordIds || wordIds.length === 0) return [];
+    
+      const words = await this.wordRepository.find({
+        where: { id: In(wordIds) },
+      })
+      return words.map((word) => word.word);
   }
 
   async findOne(id: number): Promise<Word | null> {
@@ -31,6 +40,9 @@ export class WordService {
 
     if (!word) {
       word = await this.create(dto);
+    } else if (dto.audio && !word.audio) {
+      word.audio = dto.audio;
+      await this.wordRepository.save(word);
     }
 
     return word;
