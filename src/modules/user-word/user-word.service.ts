@@ -118,9 +118,9 @@ export class UserWordService implements OnModuleInit {
 
     const userWord = await this.findOne(id, userId);
   
-    userWord.repetitionCount = Math.min(repetitionCount, 4);
+    userWord.repetitionCount = Math.min(repetitionCount, 7);
   
-    if (userWord.repetitionCount === 4) {
+    if (userWord.repetitionCount === 6) {
       userWord.repetitionDate = calculateNextRepetitionDate(intervalRepetitions);
     }
   
