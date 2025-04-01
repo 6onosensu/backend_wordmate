@@ -22,6 +22,13 @@ export class MeaningService {
     });
   }
 
+  async findRandomMeanings(count: number): Promise<Meaning[]> {
+    const allMeanings = await this.findAll();
+
+    const shuffled = allMeanings.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
   async findOne(id: number): Promise<Meaning> {
     const meaning = await this.meaningRepository.findOne({ 
       where: { id } ,

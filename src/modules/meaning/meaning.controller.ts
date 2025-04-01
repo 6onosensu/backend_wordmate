@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { MeaningService } from './meaning.service';
 import { CreateMeaningDto } from './dto/create-meaning.dto';
 import { FindOneMeaningDto } from './dto/findOne-meaning.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { Meaning } from './entities/meaning.entity';
 
 @UseGuards(AuthGuard)
 @Controller('meanings')
@@ -28,6 +29,13 @@ export class MeaningController {
     return Promise.all(
       meanings.map(async (meaning) => await this.transformToDto(meaning))
     )
+  }
+
+  @Get('random')
+  findRandomMeanings(
+    @Query('count') count: number
+  ): Promise<Meaning[]> {
+    return this.meaningService.findRandomMeanings(count);
   }
 
   @Get(':id')
