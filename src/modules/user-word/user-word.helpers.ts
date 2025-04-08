@@ -19,10 +19,10 @@ export async function updateDueStatus(
 
 export function calculateNextRepetitionDate(intervalRepetitions: number): Date {
   const intervals = [1, 3, 7, 14, 30];
-  const daysToAdd = intervals[Math.min(intervalRepetitions, intervals.length - 1)];
+  const delay = intervals[Math.min(intervalRepetitions, intervals.length - 1)];
 
   const nextDate = new Date();
-  nextDate.setDate(nextDate.getDate() + daysToAdd);
+  nextDate.setDate(nextDate.getDate() + delay);
 
   return nextDate;
 }

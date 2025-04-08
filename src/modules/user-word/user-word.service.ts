@@ -121,7 +121,9 @@ export class UserWordService implements OnModuleInit {
     userWord.repetitionCount = Math.min(repetitionCount, 7);
   
     if (userWord.repetitionCount === 6) {
-      userWord.repetitionDate = calculateNextRepetitionDate(intervalRepetitions);
+      userWord.repetitionDate = calculateNextRepetitionDate(userWord.intervalRepetitions);
+      userWord.repetitionCount = 0;
+      userWord.intervalRepetitions += 1;
     }
   
     userWord.due = userWord.repetitionDate ? userWord.repetitionDate <= new Date() : false;
