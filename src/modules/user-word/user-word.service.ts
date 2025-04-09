@@ -34,10 +34,8 @@ export class UserWordService implements OnModuleInit {
     }, 24 * 60 * 60 * 1000);
   }
   
-  async findByUserAndStatus(
-    userId: number, 
-    status: string, 
-    isDue: boolean
+  async findByUserAndStatus( 
+    userId: number, status: string, isDue: boolean
   ): Promise<UserWord[]> {
     const decodedStatus = decodeURIComponent(status);
     const statusEntity = await this.statusRepository.findOne({ 
@@ -87,7 +85,9 @@ export class UserWordService implements OnModuleInit {
     const createWordDto = { word: dto.word, audio: dto.audio, };
     const word = await this.wordService.findOrCreateWord(createWordDto);
     
-    const partOfSpeech = await this.partOfSpeechService.findOrCreatePartOfSpeech(dto.partOfSpeech);
+    const partOfSpeech = 
+      await this.partOfSpeechService
+        .findOrCreatePartOfSpeech(dto.partOfSpeech);
     
     const createMeaningDto: CreateMeaningDto = {
         word: word.word, 
@@ -111,9 +111,7 @@ export class UserWordService implements OnModuleInit {
   }
 
   async update(
-    id: number, 
-    repetitionCount: number, 
-    userId: number
+    id: number, repetitionCount: number,  userId: number
   ): Promise<UserWord> {
     const userWord = await this.findOne(id, userId);
     userWord.repetitionCount = Math.min(repetitionCount, 7);
@@ -121,21 +119,16 @@ export class UserWordService implements OnModuleInit {
     const isCompleteCycle = userWord.repetitionCount === 6;
 
     if (isCompleteCycle) {
-      userWord.repetitionDate = calculateNextRepetitionDate(userWord.intervalRepetitions);
+      const intervals = userWord.intervalRepetitions;
+      userWord.repetitionDate = calculateNextRepetitionDate(intervals);
       userWord.repetitionCount = 0;
       userWord.intervalRepetitions++;
-
-      const intervals = userWord.intervalRepetitions;
+      
       userWord.status.id =
-      intervals >= 4 ? 3 :
-      intervals >= 2 ? 2 :
-      userWord.status.id; 
+        intervals >= 4 ? 3 :
+        intervals >= 2 ? 2 :
+        userWord.status.id; 
     }
-  
-    userWord.due = userWord.repetitionDate 
-      ? userWord.repetitionDate <= new Date() 
-      : false;
-  
     return this.userWordRepository.save(userWord);
   }
 
