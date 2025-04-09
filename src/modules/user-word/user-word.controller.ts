@@ -44,14 +44,12 @@ export class UserWordController {
     @Param('id') id: number, 
     @Body() dto: { 
       repetitionCount: number, 
-      intervalRepetitions: number 
     },
     @Req() req
   ) {
     return this.userWordService.update(
       id, 
       dto.repetitionCount, 
-      dto.intervalRepetitions,
       req.user.id
     );
   }

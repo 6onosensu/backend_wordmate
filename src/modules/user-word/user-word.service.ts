@@ -110,23 +110,31 @@ export class UserWordService implements OnModuleInit {
     return this.userWordRepository.save(userWord);
   }
 
-  async update(id: number, 
+  async update(
+    id: number, 
     repetitionCount: number, 
-    intervalRepetitions: number,
     userId: number
   ): Promise<UserWord> {
-
     const userWord = await this.findOne(id, userId);
-  
     userWord.repetitionCount = Math.min(repetitionCount, 7);
   
-    if (userWord.repetitionCount === 6) {
+    const isCompleteCycle = userWord.repetitionCount === 6;
+
+    if (isCompleteCycle) {
       userWord.repetitionDate = calculateNextRepetitionDate(userWord.intervalRepetitions);
       userWord.repetitionCount = 0;
-      userWord.intervalRepetitions += 1;
+      userWord.intervalRepetitions++;
+
+      const intervals = userWord.intervalRepetitions;
+      userWord.status.id =
+      intervals >= 4 ? 3 :
+      intervals >= 2 ? 2 :
+      userWord.status.id; 
     }
   
-    userWord.due = userWord.repetitionDate ? userWord.repetitionDate <= new Date() : false;
+    userWord.due = userWord.repetitionDate 
+      ? userWord.repetitionDate <= new Date() 
+      : false;
   
     return this.userWordRepository.save(userWord);
   }
