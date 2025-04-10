@@ -1,10 +1,14 @@
-import { ConflictException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { 
+  ConflictException, Injectable, NotFoundException, OnModuleInit 
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserWord } from './entities/user-word.entity';
 import { Repository } from 'typeorm';
+import { 
+  calculateNextRepetitionDate, updateDueStatus 
+} from './user-word.helpers';
+import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { Status } from '../status/entities/status.entity';
-import { calculateNextRepetitionDate, updateDueStatus } from './user-word.helpers';
 import { MeaningService } from '../meaning/meaning.service';
 import { UserService } from '../user/user.service';
 import { WordService } from '../word/word.service';
@@ -30,8 +34,9 @@ export class UserWordService implements OnModuleInit {
 
   onModuleInit() {
     setInterval(() => {
+      console.info('Starting interval for due update');
       updateDueStatus(this.userWordRepository);
-    }, 24 * 60 * 60 * 1000);
+    }, 60 * 60 * 1000 );
   }
   
   async findByUserAndStatus( 
@@ -42,9 +47,7 @@ export class UserWordService implements OnModuleInit {
       where: { status: decodedStatus } 
     });
 
-  if (!statusEntity) {
-    throw new NotFoundException(`Status "${status}" not found`);
-  }
+    if (!statusEntity) throw new NotFoundException();
 
     const userWordList = await this.userWordRepository.find({
       where: { 
@@ -62,7 +65,7 @@ export class UserWordService implements OnModuleInit {
     });
   
     if (userWordList.length === 0) {
-      throw new NotFoundException(`No UserWords found for User ID ${userId} with Status ID ${status}`);
+      throw new NotFoundException();
     }
   
     return userWordList;
@@ -72,34 +75,30 @@ export class UserWordService implements OnModuleInit {
     const userWord = await this.userWordRepository.findOne({
       where: { id, user: { id: userId } },
     });
-    if (!userWord) throw new NotFoundException(`UserWord with ID ${id} not found for this user`);
+    if (!userWord) throw new NotFoundException();
     return userWord;
   }
 
   async create(dto: CreateUserWordDto): Promise<UserWord> {
     const user = await this.userService.findOne(dto.userId);
-    if (!user) {
-      throw new NotFoundException(`User with ID ${dto.userId} not found`);
-    }
+    if (!user) throw new NotFoundException();
 
     const createWordDto = { word: dto.word, audio: dto.audio, };
     const word = await this.wordService.findOrCreateWord(createWordDto);
-    
-    const partOfSpeech = 
-      await this.partOfSpeechService
-        .findOrCreatePartOfSpeech(dto.partOfSpeech);
+    const partOfSpeech = await this.partOfSpeechService
+      .findOrCreatePartOfSpeech(dto.partOfSpeech);
     
     const createMeaningDto: CreateMeaningDto = {
-        word: word.word, 
-        audio: dto.audio || undefined,
-        partOfSpeech: partOfSpeech.title,
-        definition: dto.definition,
-        example: dto.example,
-        synonyms: dto.synonyms || [], 
-        antonyms: dto.antonyms || [],
-      };
+      word: word.word, 
+      audio: dto.audio || undefined,
+      partOfSpeech: partOfSpeech.title,
+      definition: dto.definition,
+      example: dto.example,
+      synonyms: dto.synonyms || [], 
+      antonyms: dto.antonyms || [],
+    };
+
     const meaning = await this.meaningService.create(createMeaningDto);
-    
     const status = await this.statusService.findStatusByTitle("To Explore");
     
     await this.ensureUserWordDoesNotExist(user.id, meaning.id);
@@ -138,18 +137,15 @@ export class UserWordService implements OnModuleInit {
   }
 
   async ensureUserWordDoesNotExist(
-    userId: number, 
-    meaningId: number, 
+    userId: number, meaningId: number, 
   ): Promise<void> {
-    const existingUserWord = await this.userWordRepository.findOne({
+    const existing = await this.userWordRepository.findOne({
       where: { 
         user: { id: userId }, 
         meaning: { id: meaningId } 
       },
     });
   
-    if (existingUserWord) {
-      throw new ConflictException(`UserWord already exists for User ID ${userId} and Meaning ID ${meaningId}`);
-    }
+    if (existing) throw new ConflictException(`Already exists!`);
   }
 }
