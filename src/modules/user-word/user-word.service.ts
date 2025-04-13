@@ -122,6 +122,7 @@ export class UserWordService implements OnModuleInit {
       userWord.repetitionDate = calculateNextRepetitionDate(intervals);
       userWord.repetitionCount = 0;
       userWord.intervalRepetitions++;
+      userWord.due = false;
       
       userWord.status.id =
         intervals >= 4 ? 3 :
