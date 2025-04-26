@@ -3,6 +3,7 @@ import { UserWordService } from './user-word.service';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { UserWordWithMeaningDto } from './dto/user-word-with-meaning.dto';
 
 @UseGuards(AuthGuard)
 @Controller("userWords")
@@ -14,7 +15,7 @@ export class UserWordController {
     @Req() req,
     @Query('status') status: string,
     @Query('due') due: string, 
-  ): Promise<UserWord[]> {
+  ): Promise<UserWordWithMeaningDto[]> {
     return this.userWordService.findByUserAndStatus(
       req.user.id, 
       status,

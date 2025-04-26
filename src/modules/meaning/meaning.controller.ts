@@ -1,25 +1,17 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { MeaningService } from './meaning.service';
 import { CreateMeaningDto } from './dto/create-meaning.dto';
-import { FindOneMeaningDto } from './dto/findOne-meaning.dto';
+import { FindOneMeaningDto } from '../../common/dto/findOne-meaning.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { Meaning } from './entities/meaning.entity';
+import { transformMeaningToDto } from 'src/common/transformers/meaning.transformer';
 
 @UseGuards(AuthGuard)
 @Controller('meanings')
 export class MeaningController {
   constructor(private readonly meaningService: MeaningService) {}
-  private async transformToDto(meaning: any): Promise<FindOneMeaningDto> {
-    return {
-      id: meaning.id,
-      partOfSpeech: meaning.partOfSpeech.title,
-      word: meaning.word.word,
-      audio: meaning.word.audio,
-      definition: meaning.definition,
-      synonyms: await this.meaningService.getWordsByIds(meaning.synonymMeaningIds ?? []),
-      antonyms: await this.meaningService.getWordsByIds(meaning.antonymMeaningIds ?? []),
-      example: meaning.example,
-    };
+  private async transformToDto(meaning: Meaning): Promise<FindOneMeaningDto> {
+    return transformMeaningToDto(meaning, this.meaningService);
   }
 
   @Get()

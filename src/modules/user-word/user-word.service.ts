@@ -3,9 +3,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { 
-  calculateNextRepetitionDate, updateDueStatus 
-} from './user-word.helpers';
+import { calculateNextRepetitionDate, updateDueStatus } from './user-word.helpers';
 import { UserWord } from './entities/user-word.entity';
 import { CreateUserWordDto } from './dto/create-userWord.dto';
 import { Status } from '../status/entities/status.entity';
@@ -15,6 +13,8 @@ import { WordService } from '../word/word.service';
 import { PartOfSpeechService } from '../part-of-speech/partofspeech.service';
 import { StatusService } from '../status/status.service';
 import { CreateMeaningDto } from '../meaning/dto/create-meaning.dto';
+import { UserWordWithMeaningDto } from './dto/user-word-with-meaning.dto';
+import { mapUserWordToDto } from 'src/utils/user-word-mapping';
 
 @Injectable()
 export class UserWordService implements OnModuleInit {
@@ -42,7 +42,7 @@ export class UserWordService implements OnModuleInit {
   
   async findByUserAndStatus( 
     userId: number, status: string, isDue: boolean
-  ): Promise<UserWord[]> {
+  ): Promise<UserWordWithMeaningDto[]> {
     const decodedStatus = decodeURIComponent(status);
     const statusEntity = await this.statusRepository.findOne({ 
       where: { status: decodedStatus } 
@@ -69,7 +69,9 @@ export class UserWordService implements OnModuleInit {
       throw new NotFoundException();
     }
   
-    return userWordList;
+    return Promise.all(
+      userWordList.map(userWord => mapUserWordToDto(userWord, this.meaningService))
+    );
   }
 
   async findOne(id: number, userId: number): Promise<UserWord> {
