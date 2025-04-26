@@ -34,8 +34,9 @@ export class UserWordService implements OnModuleInit {
 
   onModuleInit() {
     setInterval(() => {
-      console.info('Starting interval for due update');
-      updateDueStatus(this.userWordRepository);
+      updateDueStatus(this.userWordRepository).catch((err) => {
+        console.error('Unhandled error in updateDueWords:', err);
+      });
     }, 60 * 60 * 1000 );
   }
   
