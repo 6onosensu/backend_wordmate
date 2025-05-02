@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { CreateWordDto } from './dto/create-word.dto';
-import { WordService } from './word.service';
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { CreateWordDto } from 'src/modules/word/dto/create-word.dto';
+import { WordService } from 'src/modules/word/word.service';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('words')

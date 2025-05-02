@@ -1,7 +1,7 @@
-import { WordService } from './word.service';
-import { WordController } from './word.controller';
+import { WordService } from 'src/modules/word/word.service';
+import { WordController } from 'src/modules/word/word.controller';
 import { Module } from '@nestjs/common';
-import { Word } from './entities/word.entity';
+import { Word } from 'src/modules/word/entities/word.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

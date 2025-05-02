@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, } from '@nestjs/common';
-import { UserWordService } from './user-word.service';
-import { UserWord } from './entities/user-word.entity';
-import { CreateUserWordDto } from './dto/create-userWord.dto';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { UserWordWithMeaningDto } from './dto/user-word-with-meaning.dto';
+import { UserWordService } from 'src/modules/user-word/user-word.service';
+import { UserWord } from 'src/modules/user-word/entities/user-word.entity';
+import { CreateUserWordDto } from 'src/modules/user-word/dto/create-userWord.dto';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { UserWordWithMeaningDto } from 'src/modules/user-word/dto/user-word-with-meaning.dto';
 
 @UseGuards(AuthGuard)
 @Controller("userWords")

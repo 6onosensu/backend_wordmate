@@ -1,5 +1,5 @@
 import { LessThanOrEqual, Repository } from 'typeorm';
-import { UserWord } from './entities/user-word.entity';
+import { UserWord } from 'src/modules/user-word/entities/user-word.entity';
 
 export async function updateDueStatus(
   userWordRepository: Repository<UserWord>

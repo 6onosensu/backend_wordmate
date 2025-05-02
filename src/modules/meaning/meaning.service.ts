@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meaning } from './entities/meaning.entity';
+import { Meaning } from 'src/modules/meaning/entities/meaning.entity';
 import { Repository } from 'typeorm';
-import { CreateMeaningDto } from './dto/create-meaning.dto';
-import { WordService } from '../word/word.service';
-import { PartOfSpeechService } from '../part-of-speech/partofspeech.service';
+import { CreateMeaningDto } from 'src/modules/meaning/dto/create-meaning.dto';
+import { WordService } from 'src/modules/word/word.service';
+import { PartOfSpeechService } from 'src/modules/part-of-speech/partofspeech.service';
 
 @Injectable()
 export class MeaningService {

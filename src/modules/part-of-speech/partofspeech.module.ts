@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PartOfSpeech } from './entities/part-of-speech.entity';
-import { PartOfSpeechService } from './partofspeech.service';
-import { PartOfSpeechController } from './partofspeech.controller';
+import { PartOfSpeech } from 'src/modules/part-of-speech/entities/part-of-speech.entity';
+import { PartOfSpeechService } from 'src/modules/part-of-speech/partofspeech.service';
+import { PartOfSpeechController } from 'src/modules/part-of-speech/partofspeech.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PartOfSpeech])],

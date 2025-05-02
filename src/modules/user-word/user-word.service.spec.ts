@@ -1,11 +1,11 @@
 import { Repository } from 'typeorm';
-import { updateDueStatus } from './user-word.helpers';
-import { UserWordService } from './user-word.service';
-import { UserWord } from './entities/user-word.entity';
-import { Status } from '../status/entities/status.entity';
+import { updateDueStatus } from 'src/modules/user-word/user-word.helpers';
+import { UserWordService } from 'src/modules/user-word/user-word.service';
+import { UserWord } from 'src/modules/user-word/entities/user-word.entity';
+import { Status } from 'src/modules/status/entities/status.entity';
 
 jest.mock('./user-word.helpers', () => ({
-  updateDueStatus: jest.fn(),
+  updateDueStatus: jest.fn().mockResolvedValue(undefined),
 }));
 
 describe('UserWordService', () => {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
-import { Word } from './entities/word.entity';
+import { Word } from 'src/modules/word/entities/word.entity';
 import { In, Repository } from 'typeorm';
-import { CreateWordDto } from './dto/create-word.dto';
+import { CreateWordDto } from 'src/modules/word/dto/create-word.dto';
 
 @Injectable()
 export class WordService {

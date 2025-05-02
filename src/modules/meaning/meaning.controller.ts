@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { MeaningService } from './meaning.service';
-import { CreateMeaningDto } from './dto/create-meaning.dto';
-import { FindOneMeaningDto } from '../../common/dto/findOne-meaning.dto';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { Meaning } from './entities/meaning.entity';
+import { MeaningService } from 'src/modules/meaning/meaning.service';
+import { CreateMeaningDto } from 'src/modules/meaning/dto/create-meaning.dto';
+import { FindOneMeaningDto } from 'src/common/dto/findOne-meaning.dto';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { Meaning } from 'src/modules/meaning/entities/meaning.entity';
 import { transformMeaningToDto } from 'src/common/transformers/meaning.transformer';
 
 @UseGuards(AuthGuard)

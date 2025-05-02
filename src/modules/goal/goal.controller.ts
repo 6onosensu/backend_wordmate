@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { GoalService } from './goal.service';
-import { GoalDto } from './dto/goal.dto';
+import { GoalService } from 'src/modules/goal/goal.service';
+import { GoalDto } from 'src/modules/goal/dto/goal.dto';
 
 @Controller('goals')
 export class GoalController {

@@ -1,5 +1,5 @@
-import { FindOneMeaningDto } from "../../../common/dto/findOne-meaning.dto";
-import { Status } from "../../status/entities/status.entity";
+import { FindOneMeaningDto } from "src/common/dto/findOne-meaning.dto";
+import { Status } from "src/modules/status/entities/status.entity";
 
 export interface UserWordWithMeaningDto {
   id: number;

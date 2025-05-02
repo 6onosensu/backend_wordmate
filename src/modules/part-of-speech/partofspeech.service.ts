@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PartOfSpeech } from './entities/part-of-speech.entity';
+import { PartOfSpeech } from 'src/modules/part-of-speech/entities/part-of-speech.entity';
 import { Repository } from 'typeorm';
-import { title } from 'process';
 
 @Injectable()
 export class PartOfSpeechService {

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req } from '@nestjs/common';
-import { UserGoalService } from './user-goal.service';
-import { CreateUserGoalDto } from './dto/user-goal.dto';
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { UserGoalService } from 'src/modules/user-goal/user-goal.service';
+import { CreateUserGoalDto } from 'src/modules/user-goal/dto/user-goal.dto';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('user-goals')

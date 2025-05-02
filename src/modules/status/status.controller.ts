@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
-import { StatusService } from './status.service';
-import { Status } from './entities/status.entity';
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { StatusService } from 'src/modules/status/status.service';
+import { Status } from 'src/modules/status/entities/status.entity';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('status')

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Meaning } from './entities/meaning.entity';
-import { MeaningController } from './meaning.controller';
-import { MeaningService } from './meaning.service';
-import { WordModule } from '../word/word.module';
-import { PartOfSpeechModule } from '../part-of-speech/partofspeech.module';
+import { Meaning } from 'src/modules/meaning/entities/meaning.entity';
+import { MeaningController } from 'src/modules/meaning/meaning.controller';
+import { MeaningService } from 'src/modules/meaning/meaning.service';
+import { WordModule } from 'src/modules/word/word.module';
+import { PartOfSpeechModule } from 'src/modules/part-of-speech/partofspeech.module';
 
 @Module({
   imports: [

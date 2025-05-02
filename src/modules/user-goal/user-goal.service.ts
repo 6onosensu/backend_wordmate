@@ -1,8 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserGoal } from './entites/user-goal.entity';
-import { CreateUserGoalDto } from './dto/user-goal.dto';
+import { UserGoal } from 'src/modules/user-goal/entites/user-goal.entity';
+import { CreateUserGoalDto } from 'src/modules/user-goal/dto/user-goal.dto';
 
 @Injectable()
 export class UserGoalService {

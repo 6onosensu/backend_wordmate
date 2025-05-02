@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { PartOfSpeechService } from './partofspeech.service';
-import { CreatePartOfSpeechDto } from './dto/part-of-speech.dto';
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { PartOfSpeechService } from 'src/modules/part-of-speech/partofspeech.service';
+import { CreatePartOfSpeechDto } from 'src/modules/part-of-speech/dto/part-of-speech.dto';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller('part-of-speech')

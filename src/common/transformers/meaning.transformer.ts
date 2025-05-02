@@ -1,6 +1,6 @@
-import { MeaningService } from '../../modules/meaning/meaning.service';
-import { FindOneMeaningDto } from '../dto/findOne-meaning.dto';
-import { Meaning } from '../../modules/meaning/entities/meaning.entity';
+import { MeaningService } from 'src/modules/meaning/meaning.service';
+import { FindOneMeaningDto } from 'src/common/dto/findOne-meaning.dto';
+import { Meaning } from 'src/modules/meaning/entities/meaning.entity';
 
 export const transformMeaningToDto = async (
   meaning: Meaning,

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserGoalService } from './user-goal.service';
-import { UserGoalController } from './user-goal.controller';
-import { UserGoal } from './entites/user-goal.entity';
+import { UserGoalService } from 'src/modules/user-goal/user-goal.service';
+import { UserGoalController } from 'src/modules/user-goal/user-goal.controller';
+import { UserGoal } from 'src/modules/user-goal/entites/user-goal.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserGoal])],

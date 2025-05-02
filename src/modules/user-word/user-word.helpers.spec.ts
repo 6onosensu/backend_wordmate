@@ -1,5 +1,5 @@
-import { updateDueStatus } from './user-word.helpers';
-import { UserWord } from './entities/user-word.entity';
+import { updateDueStatus } from 'src/modules/user-word/user-word.helpers';
+import { UserWord } from 'src/modules/user-word/entities/user-word.entity';
 import { Repository } from 'typeorm';
 
 describe('updateDueStatus', () => {
